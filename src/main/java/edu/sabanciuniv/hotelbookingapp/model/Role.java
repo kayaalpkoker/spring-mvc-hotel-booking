@@ -3,8 +3,6 @@ package edu.sabanciuniv.hotelbookingapp.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,10 +18,12 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(unique = true)
     private RoleType roleType;
 
-    @OneToMany(mappedBy = "role")
-    private List<User> userList = new ArrayList<>();
+    public Role(RoleType roleType) {
+        this.roleType = roleType;
+    }
 
     @Override
     public String toString() {

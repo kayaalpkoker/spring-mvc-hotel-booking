@@ -32,7 +32,6 @@ public class User {
     private String lastName;
 
     @ManyToOne
-    @JoinColumn(name = "fk_role")
     private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
