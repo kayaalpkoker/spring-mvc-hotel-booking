@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -25,7 +25,7 @@ public class User {
     private String password;
 
     @CreationTimestamp
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 
     private String name;
 
@@ -48,7 +48,6 @@ public class User {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
                 ", createdDate=" + createdDate +
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +

@@ -21,8 +21,15 @@ public class Payment {
     @OneToOne
     private Booking booking;
 
-    private BigDecimal amount;
-
     @CreationTimestamp
     private LocalDate paymentDate;
+
+    private BigDecimal amount;
+
+    /*
+     Credit card related data?
+     private int creditCardNumber
+     expiryDate
+     cvv
+    */
 }

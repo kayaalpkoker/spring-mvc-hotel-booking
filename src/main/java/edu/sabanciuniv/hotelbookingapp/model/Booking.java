@@ -31,7 +31,8 @@ public class Booking {
 
     private LocalDate checkoutDate;
 
-    // tbd --> room?
+    // private int bookedSingleRooms;
+    // private int bookedDoubleRooms;
 
     @OneToOne(mappedBy = "booking")
     private Payment payment;
