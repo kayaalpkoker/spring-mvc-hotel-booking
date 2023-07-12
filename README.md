@@ -1,2 +1,2 @@
-# spring-vue-hotel-booking
-Full-stack hotel booking application built with Spring Boot and Vue.js
+# spring-mvc-hotel-booking
+Hotel booking application built with Spring Boot and Thymeleaf
