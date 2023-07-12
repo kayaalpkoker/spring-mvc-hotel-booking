@@ -16,7 +16,6 @@ public class HomeController {
     public String viewRegisterPage(){
         return "registration";
     }
-
      */
 
     @GetMapping("/login")

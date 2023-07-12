@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <title>Homepage</title>
-    </head>
-    <body>
-        <h1>Hotel Booking App by KAK</h1>
-        <nav>
-            <ul>
-                <li><a th:href="@{/registration.html}">Register</a></li>
-                <li><a th:href="@{/login.html}">Login</a></li>
-            </ul>
-        </nav>
-
-
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage</title>
+    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
+</head>
+<body>
+<div class="container">
+    <div class="row justify-content-center align-items-center vh-100">
+        <div class="col-4 text-center">
+            <h1 class="mb-5">Welcome to KAK Hotel Booking App</h1>
+            <a th:href="@{/registration}" class="btn btn-secondary btn-lg">Register</a>
+            <a th:href="@{/login}" class="btn btn-primary btn-lg mb-3">Login</a><br>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
+</body>
 </html>
