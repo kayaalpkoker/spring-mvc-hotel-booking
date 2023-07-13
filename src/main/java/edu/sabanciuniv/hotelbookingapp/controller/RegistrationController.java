@@ -23,7 +23,7 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String registerUserAccount(@ModelAttribute("user") @Valid UserRegistrationDTO registrationDTO, BindingResult result) {
+    public String registerUserAccount(@Valid @ModelAttribute("user") UserRegistrationDTO registrationDTO, BindingResult result) {
         if (result.hasErrors()) {
             return "registration";
         }
