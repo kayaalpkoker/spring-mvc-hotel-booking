@@ -5,6 +5,9 @@
     <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
+
+<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
+
 <div class="container">
     <h2>Register</h2>
     <form th:action="@{/register/save}" th:object="${user}" method="post">
@@ -37,6 +40,8 @@
         </div>
     </form>
 </div>
+
 <th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
+
 </body>
 </html>

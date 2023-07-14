@@ -27,22 +27,28 @@ public class SpringSecurity {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/index").permitAll()
+
+        // In case CSRF disabling is needed for testing
+        // http.csrf(csrf -> csrf.disable());
+
+        http.authorizeHttpRequests((authorize) ->
+                        authorize.requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                                .requestMatchers("/webjars/**").permitAll()
+                                .requestMatchers("/").permitAll()
+                                .requestMatchers("/index").permitAll()
                                 .requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/users").hasRole("ADMIN"))
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .anyRequest().authenticated())
                 .formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
                                 .defaultSuccessUrl("/user-dashboard")
-                                .permitAll()
-                ).logout(
+                                .permitAll())
+                .logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                                 .permitAll()
-
                 );
         return http.build();
     }
