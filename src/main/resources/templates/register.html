@@ -15,7 +15,7 @@
                 <h2 class="text-center">Register</h2>
             </div>
             <div class="card-body">
-                <form th:action="@{/register/save}" th:object="${user}" method="post">
+                <form method="post" th:action="@{/register/save}" th:object="${user}">
                     <div class="form-group mb-3">
                         <label class="form-label" for="username">Email:</label>
                         <input class="form-control" id="username" type="email" th:field="*{username}"
