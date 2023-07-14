@@ -24,5 +24,4 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<Booking> bookingList = new ArrayList<>();
 
-
 }
