@@ -29,7 +29,7 @@ public class Role {
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", roleType=" + roleType +
+                ", name=" + roleType +
                 '}';
     }
 
@@ -46,3 +46,4 @@ public class Role {
         return Objects.hash(id, roleType);
     }
 }
+

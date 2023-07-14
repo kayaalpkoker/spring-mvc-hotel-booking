@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fragment: Navbar</title>
+    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-md navbar-light bg-light mb-3" th:fragment="navbar">
+    <div class="container col-md-10">
+        <a class="navbar-brand" th:href="@{/}">
+            <img src="/img/camel-logo-50.png" alt="Logo" width="50" height="50"
+                 class="d-inline-block align-content-center">
+            Camel Travel
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/register}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/login}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
+
+</body>
+</html>

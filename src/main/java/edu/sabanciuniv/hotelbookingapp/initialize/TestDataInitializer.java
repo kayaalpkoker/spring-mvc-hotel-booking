@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,50 +22,56 @@ public class TestDataInitializer implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
-        if (roleRepository.count() == 0 && userRepository.count() == 0) {
-            log.warn("Initiating data persistence actions");
+        try {
+            log.warn("Checking if test data persistence is required...");
 
-            Role adminRole = new Role(RoleType.ADMIN);
-            Role customerRole = new Role(RoleType.CUSTOMER);
-            Role hotelManagerRole = new Role(RoleType.HOTEL_MANAGER);
+            if (roleRepository.count() == 0 && userRepository.count() == 0) {
+                log.warn("Initiating test data persistence");
 
-            roleRepository.save(adminRole);
-            roleRepository.save(customerRole);
-            roleRepository.save(hotelManagerRole);
-            log.warn("Role data saved");
+                Role adminRole = new Role(RoleType.ADMIN);
+                Role customerRole = new Role(RoleType.CUSTOMER);
+                Role hotelManagerRole = new Role(RoleType.HOTEL_MANAGER);
 
-            User user1 = User.builder().username("admin1").password("123...").name("Kaya Alp").lastName("Köker").role(adminRole).build();
-            User user2 = User.builder().username("customer1").password("111").name("John").lastName("Doe").role(customerRole).build();
-            User user3 = User.builder().username("manager1").password("222").name("Jane").lastName("Doe").role(hotelManagerRole).build();
-            User user4 = User.builder().username("customer2").password("333").name("Jack").lastName("Black").role(customerRole).build();
-            User user5 = User.builder().username("manager2").password("444").name("Eddie").lastName("Murphy").role(hotelManagerRole).build();
+                roleRepository.save(adminRole);
+                roleRepository.save(customerRole);
+                roleRepository.save(hotelManagerRole);
+                log.warn("Role data persisted");
 
-            userRepository.save(user1);
-            userRepository.save(user2);
-            userRepository.save(user3);
+                User user1 = User.builder().username("admin@hotel.com").password("111111").name("Admin").lastName("Admin").role(adminRole).build();
+                User user2 = User.builder().username("customer1@hotel.com").password("222222").name("Kaya Alp").lastName("Koker").role(customerRole).build();
+                User user3 = User.builder().username("manager1@hotel.com").password("333333").name("John").lastName("Doe").role(hotelManagerRole).build();
+                User user4 = User.builder().username("manager2@hotel.com").password("444444").name("Max").lastName("Mustermann").role(hotelManagerRole).build();
 
-            Admin admin1 = new Admin();
-            Customer c1 = new Customer();
-            Customer c2 = new Customer();
-            HotelManager hm1 = new HotelManager();
-            HotelManager hm2 = new HotelManager();
+                userRepository.save(user1);
+                userRepository.save(user2);
+                userRepository.save(user3);
+                userRepository.save(user4);
 
-            admin1.setUser(user1);
-            c1.setUser(user2);
-            c2.setUser(user4);
-            hm1.setUser(user3);
-            hm2.setUser(user5);
+                Admin admin1 = new Admin();
+                Customer c1 = new Customer();
+                HotelManager hm1 = new HotelManager();
+                HotelManager hm2 = new HotelManager();
 
-            adminRepository.save(admin1);
-            customerRepository.save(c1);
-            customerRepository.save(c2);
-            hotelManagerRepository.save(hm1);
-            hotelManagerRepository.save(hm2);
+                admin1.setUser(user1);
+                c1.setUser(user2);
+                hm1.setUser(user3);
+                hm2.setUser(user4);
 
-            log.warn("All test user data saved");
+                adminRepository.save(admin1);
+                customerRepository.save(c1);
+                hotelManagerRepository.save(hm1);
+                hotelManagerRepository.save(hm2);
+
+                log.warn("User data persisted");
+            } else {
+                log.warn("App ready - Test data persistence is not required");
+            }
+        } catch (DataAccessException e) {
+            log.error("Exception occurred during data persistence: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("Unexpected exception occurred: " + e.getMessage());
         }
-
     }
 }
