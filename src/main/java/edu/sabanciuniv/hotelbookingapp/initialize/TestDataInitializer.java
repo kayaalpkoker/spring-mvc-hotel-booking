@@ -22,10 +22,9 @@ public class TestDataInitializer implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         try {
-
             log.warn("Checking if test data persistence is required...");
 
             if (roleRepository.count() == 0 && userRepository.count() == 0) {
