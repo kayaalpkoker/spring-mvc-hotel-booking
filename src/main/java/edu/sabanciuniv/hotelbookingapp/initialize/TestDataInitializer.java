@@ -35,35 +35,32 @@ public class TestDataInitializer implements CommandLineRunner {
             roleRepository.save(hotelManagerRole);
             log.warn("Role data saved");
 
-            User user1 = User.builder().username("admin1").password("123...").name("Kaya Alp").lastName("Köker").role(adminRole).build();
-            User user2 = User.builder().username("customer1").password("111").name("John").lastName("Doe").role(customerRole).build();
-            User user3 = User.builder().username("manager1").password("222").name("Jane").lastName("Doe").role(hotelManagerRole).build();
-            User user4 = User.builder().username("customer2").password("333").name("Jack").lastName("Black").role(customerRole).build();
-            User user5 = User.builder().username("manager2").password("444").name("Eddie").lastName("Murphy").role(hotelManagerRole).build();
+            User user1 = User.builder().username("admin@hotel.com").password("111111").name("Admin").lastName("Admin").role(adminRole).build();
+            User user2 = User.builder().username("customer1@hotel.com").password("222222").name("Kaya Alp").lastName("Koker").role(customerRole).build();
+            User user3 = User.builder().username("manager1@hotel.com").password("333333").name("John").lastName("Doe").role(hotelManagerRole).build();
+            User user4 = User.builder().username("manager2@hotel.com").password("444444").name("Max").lastName("Mustermann").role(hotelManagerRole).build();
 
             userRepository.save(user1);
             userRepository.save(user2);
             userRepository.save(user3);
+            userRepository.save(user4);
 
             Admin admin1 = new Admin();
             Customer c1 = new Customer();
-            Customer c2 = new Customer();
             HotelManager hm1 = new HotelManager();
             HotelManager hm2 = new HotelManager();
 
             admin1.setUser(user1);
             c1.setUser(user2);
-            c2.setUser(user4);
             hm1.setUser(user3);
-            hm2.setUser(user5);
+            hm2.setUser(user4);
 
             adminRepository.save(admin1);
             customerRepository.save(c1);
-            customerRepository.save(c2);
             hotelManagerRepository.save(hm1);
             hotelManagerRepository.save(hm2);
 
-            log.warn("All test user data saved");
+            log.warn("User data saved");
         }
 
     }
