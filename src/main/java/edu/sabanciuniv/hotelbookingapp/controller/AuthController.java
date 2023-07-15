@@ -15,9 +15,19 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
-public class RegistrationController {
+public class AuthController {
 
     private final UserService userService;
+
+    @GetMapping("/")
+    public String homePage() {
+        return "index";
+    }
+
+    @GetMapping("/login")
+    public String loginPage() {
+        return "login";
+    }
 
     @GetMapping("/register")
     public String showRegistrationForm(@ModelAttribute("user") UserRegistrationDTO registrationDTO) {
@@ -38,8 +48,8 @@ public class RegistrationController {
         }
 
         userService.save(registrationDTO);
-        // redirect link needs to be changed
         return "redirect:/register?success";
     }
 
 }
+
