@@ -11,10 +11,10 @@ public class ResetUsernameDTO {
 
     @NotBlank(message = "Email address cannot be empty")
     @Email(message = "Invalid email address")
-    String oldUsername;
+    private String oldUsername;
 
     @NotBlank(message = "Email address cannot be empty")
     @Email(message = "Invalid email address")
-    String newUsername;
+    private String newUsername;
 
 }

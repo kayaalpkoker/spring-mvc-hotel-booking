@@ -1,5 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.model.dto;
 
+import edu.sabanciuniv.hotelbookingapp.model.RoleType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -13,18 +14,20 @@ public class UserRegistrationDTO {
 
     @NotBlank(message = "Email address cannot be empty")
     @Email(message = "Invalid email address")
-    String username;
+    private String username;
 
     @NotBlank(message = "Password cannot be empty")
     @Size(min = 6, max = 20, message = "Password must be between 6 to 20 characters")
-    String password;
+    private String password;
 
     @NotBlank(message = "Name cannot be empty")
     @Pattern(regexp = "^(?!\\s*$)[A-Za-z ]+$", message = "Name must only contain letters")
-    String name;
+    private String name;
 
     @NotBlank(message = "Last name cannot be empty")
     @Pattern(regexp = "^(?!\\s*$)[A-Za-z ]+$", message = "Last name must only contain letters")
-    String lastName;
+    private String lastName;
+
+    private RoleType roleType;
 
 }

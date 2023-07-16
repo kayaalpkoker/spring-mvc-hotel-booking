@@ -11,14 +11,14 @@ public class ResetPasswordDTO {
 
     @NotBlank(message = "Password cannot be empty")
     @Size(min = 6, max = 20, message = "Password must be between 6 to 20 characters")
-    String oldPassword;
+    private String oldPassword;
 
     @NotBlank(message = "Password cannot be empty")
     @Size(min = 6, max = 20, message = "Password must be between 6 to 20 characters")
-    String newPassword;
+    private String newPassword;
 
     @NotBlank(message = "Password cannot be empty")
     @Size(min = 6, max = 20, message = "Password must be between 6 to 20 characters")
-    String confirmNewPassword;
+    private String confirmNewPassword;
 
 }
