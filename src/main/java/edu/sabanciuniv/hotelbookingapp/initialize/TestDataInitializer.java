@@ -61,11 +61,10 @@ public class TestDataInitializer implements CommandLineRunner {
                 hotelManagerRepository.save(hm1);
                 hotelManagerRepository.save(hm2);
                 log.warn("User data persisted");
-
-                log.warn("App ready");
             } else {
-                log.warn("App ready - Test data persistence is not required");
+                log.warn("Test data persistence is not required");
             }
+            log.warn("App ready");
         } catch (DataAccessException e) {
             log.error("Exception occurred during data persistence: " + e.getMessage());
         } catch (Exception e) {
