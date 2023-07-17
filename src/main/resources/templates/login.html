@@ -5,9 +5,7 @@
     <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-
 <th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
-
 <div class="container">
     <div class="row col-md-8 offset-md-2">
 
@@ -15,7 +13,7 @@
             <div class="alert alert-danger">Invalid Email or Password</div>
         </div>
         <div th:if="${param.logout}">
-            <div class="alert alert-success"> You have been logged out.</div>
+            <div class="alert alert-success"> You have successfully logged out</div>
         </div>
 
         <div class="card">
@@ -43,8 +41,6 @@
         </div>
     </div>
 </div>
-
 <th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
-
 </body>
 </html>

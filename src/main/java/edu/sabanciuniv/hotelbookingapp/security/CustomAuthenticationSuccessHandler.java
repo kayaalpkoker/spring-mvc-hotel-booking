@@ -39,7 +39,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 break;
             }
         }
-
         log.info("Redirect path: " + redirectUrl);
 
         if (redirectUrl == null) {

@@ -1,11 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Admin Dashboard</title>
+    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-
-
+<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill"></i>
+                    <h5 class="card-title">List Users</h5>
+                    <a th:href="@{/admin/users}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-building"></i>
+                    <h5 class="card-title">List Hotels</h5>
+                    <a th:href="@{/admin/hotels}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-bookmark-check"></i>
+                    <h5 class="card-title">List Bookings</h5>
+                    <a th:href="@{/admin/bookings}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
 </body>
 </html>

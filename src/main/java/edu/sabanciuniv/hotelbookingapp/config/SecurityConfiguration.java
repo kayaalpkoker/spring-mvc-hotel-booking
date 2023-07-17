@@ -31,7 +31,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         // In case CSRF disabling is needed for testing
-        // http.csrf(csrf -> csrf.disable());
+        http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
