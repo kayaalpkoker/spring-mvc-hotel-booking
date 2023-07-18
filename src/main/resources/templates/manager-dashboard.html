@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
 <head>
     <title>Manager Dashboard</title>
-    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
+<th:block layout:fragment="content">
 <div class="container">
     <div class="row">
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <i class="bi bi-plus-square"></i>
+                    <i class="bi bi-plus-square-dotted fs-1"></i>
                     <h5 class="card-title">Add Hotel</h5>
                     <a th:href="@{/manager/hotels/add}" class="btn btn-primary">Go</a>
                 </div>
@@ -20,7 +20,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <i class="bi bi-building"></i>
+                    <i class="bi bi-building fs-1"></i>
                     <h5 class="card-title">My Hotels</h5>
                     <a th:href="@{/manager/hotels}" class="btn btn-primary">Go</a>
                 </div>
@@ -29,7 +29,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <i class="bi bi-bookmark-check"></i>
+                    <i class="bi bi-calendar-check fs-1"></i>
                     <h5 class="card-title">Hotel Bookings</h5>
                     <a th:href="@{/manager/bookings}" class="btn btn-primary">Go</a>
                 </div>
@@ -37,6 +37,6 @@
         </div>
     </div>
 </div>
-<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
+</th:block>
 </body>
 </html>

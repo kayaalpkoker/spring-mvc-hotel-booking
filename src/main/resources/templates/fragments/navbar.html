@@ -2,10 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Fragment: Navbar</title>
-    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-
 <nav class="navbar navbar-expand-md navbar-light bg-light mb-3" th:fragment="navbar">
     <div class="container col-md-10">
         <a class="navbar-brand" th:href="@{/}">
@@ -37,8 +35,5 @@
         </div>
     </div>
 </nav>
-
-<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
-
 </body>
 </html>

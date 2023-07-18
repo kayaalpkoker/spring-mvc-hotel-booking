@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
 <head>
     <title>Customer Dashboard</title>
-    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
+<th:block layout:fragment="content">
 <div class="container">
     <div class="row">
         <div class="col-md-6 offset-md-3">
@@ -31,6 +31,6 @@
         </div>
     </div>
 </div>
-<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
+</th:block>
 </body>
 </html>
