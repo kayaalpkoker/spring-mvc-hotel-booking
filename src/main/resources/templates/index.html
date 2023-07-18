@@ -1,25 +1,20 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
 <head>
-    <meta charset="UTF-8">
     <title>Homepage</title>
-    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-
-<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
-
-<div class="container">
-    <div class="row justify-content-center align-items-center vh-100">
-        <div class="col-4 text-center">
-            <h1 class="mb-5">Welcome to KAK Hotel Booking App</h1>
-            <a th:href="@{/register}" class="btn btn-secondary btn-lg">Register</a>
-            <a th:href="@{/login}" class="btn btn-primary btn-lg">Login</a><br>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-4 text-center">
+                <h1 class="mb-5">Welcome to KAK Hotel Booking App</h1>
+                <a th:href="@{/register/customer}" class="btn btn-secondary btn-lg">Register</a>
+                <a th:href="@{/login}" class="btn btn-primary btn-lg">Login</a><br>
+            </div>
         </div>
     </div>
-</div>
-
-<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
-
+</th:block>
 </body>
 </html>

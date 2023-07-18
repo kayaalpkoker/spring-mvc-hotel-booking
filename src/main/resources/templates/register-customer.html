@@ -1,21 +1,19 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
 <head>
     <title>Registration Page</title>
-    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-
-<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
-
+<th:block layout:fragment="content">
 <div class="container">
     <div class="row col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header">
-                <h2 class="text-center">Register</h2>
+                <h2 class="text-center">Customer Registration</h2>
             </div>
             <div class="card-body">
-                <form method="post" th:action="@{/register/save}" th:object="${user}">
+                <form method="post" th:action="@{/register/customer}" th:object="${user}">
                     <div class="form-group mb-3">
                         <label class="form-label" for="username">Email:</label>
                         <input class="form-control" id="username" type="email" th:field="*{username}"
@@ -41,7 +39,7 @@
                     </div>
                     <div class="form-group mb-3">
                         <button type="submit" class="btn btn-primary">Register</button>
-                        <span>Already registered? <a th:href="@{login}">Login here</a></span>
+                        <span>Already registered? <a th:href="@{/login}">Login here</a></span>
                     </div>
                     <div class="alert alert-success" th:if="${param.success}">
                         Registration Successful!
@@ -51,8 +49,6 @@
         </div>
     </div>
 </div>
-
-<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
-
+</th:block>
 </body>
 </html>

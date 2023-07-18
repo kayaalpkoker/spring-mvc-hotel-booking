@@ -1,50 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
 <head>
     <title>Login page</title>
-    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
 </head>
 <body>
-
-<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
-
-<div class="container">
-    <div class="row col-md-8 offset-md-2">
-
-        <div th:if="${param.error}">
-            <div class="alert alert-danger">Invalid Email or Password</div>
-        </div>
-        <div th:if="${param.logout}">
-            <div class="alert alert-success"> You have been logged out.</div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h2 class="text-center">Login</h2>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row col-md-8 offset-md-2">
+            <div th:if="${param.error}">
+                <div class="alert alert-danger">Invalid Email or Password</div>
             </div>
-
-            <div class="card-body">
-                <!---class="form-horizontal" ? -->
-                <form method="post" th:action="@{/login}" th:object="${user}">
-                    <div class="form-group mb-3">
-                        <label class="form-label" for="username">Email:</label>
-                        <input class="form-control" id="username" name="username" type="email" placeholder="Enter email address">
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label" for="password">Password:</label>
-                        <input class="form-control" id="password" name="password" type="password" placeholder="Enter password">
-                    </div>
-                    <div class="form-group mb-3">
-                        <button type="submit" class="btn btn-primary">Login</button>
-                        <span>Not registered? <a th:href="@{/register}">Register here</a></span>
-                    </div>
-                </form>
+            <div th:if="${param.logout}">
+                <div class="alert alert-success"> You have successfully logged out</div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Login</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" th:action="@{/login}">
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="username">Email:</label>
+                            <input class="form-control" id="username" name="username" type="email"
+                                   placeholder="Enter email address">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="password">Password:</label>
+                            <input class="form-control" id="password" name="password" type="password"
+                                   placeholder="Enter password">
+                        </div>
+                        <div class="form-group mb-3">
+                            <button type="submit" class="btn btn-primary">Login</button>
+                            <span>Not registered? <a th:href="@{/register/customer}">Register here</a></span>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
-
+</th:block>
 </body>
 </html>

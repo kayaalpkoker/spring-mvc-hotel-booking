@@ -1,5 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.config;
 
+import edu.sabanciuniv.hotelbookingapp.security.CustomAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +17,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SpringSecurity {
+public class SecurityConfiguration {
 
     private final UserDetailsService userDetailsService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -29,21 +31,18 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         // In case CSRF disabling is needed for testing
-        // http.csrf(csrf -> csrf.disable());
+        http.csrf(csrf -> csrf.disable());
 
         http.authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                                .requestMatchers("/webjars/**").permitAll()
-                                .requestMatchers("/").permitAll()
-                                .requestMatchers("/index").permitAll()
-                                .requestMatchers("/register/**").permitAll()
+                        authorize.requestMatchers("/css/**", "/js/**", "/webjars/**", "/img/**").permitAll()
+                                .requestMatchers("/", "/index", "/register/**").permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/user-dashboard")
+                                .successHandler(customAuthenticationSuccessHandler)
                                 .permitAll())
                 .logout(
                         logout -> logout

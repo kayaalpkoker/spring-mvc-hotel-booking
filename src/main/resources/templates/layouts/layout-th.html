@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <title th:text="${title}">Title</title>
+    <th:block th:insert="~{fragments/bootstrap :: bootstrap-css}"></th:block>
+    <th:block th:insert="~{fragments/bootstrap :: bootstrap-icons}"></th:block>
+</head>
+<body th:fragment="body">
+<th:block th:insert="~{fragments/navbar :: navbar}"></th:block>
+
+<div th:fragment="content"></div>
+
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container">
+        <span class="text-muted">© 2023 Kaya Alp Köker. All rights reserved.</span>
+    </div>
+</footer>
+
+<th:block th:insert="~{fragments/bootstrap :: bootstrap-js}"></th:block>
+</body>
+</html>
+

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
+<head>
+    <title>Manager Dashboard</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-plus-square-dotted fs-1"></i>
+                    <h5 class="card-title">Add Hotel</h5>
+                    <a th:href="@{/manager/hotels/add}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-building fs-1"></i>
+                    <h5 class="card-title">My Hotels</h5>
+                    <a th:href="@{/manager/hotels}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar-check fs-1"></i>
+                    <h5 class="card-title">Hotel Bookings</h5>
+                    <a th:href="@{/manager/bookings}" class="btn btn-primary">Go</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</th:block>
+</body>
+</html>

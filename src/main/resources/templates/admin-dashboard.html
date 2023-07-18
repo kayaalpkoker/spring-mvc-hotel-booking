@@ -1,11 +1,42 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Admin Dashboard</title>
 </head>
 <body>
-
-
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people-fill fs-1"></i>
+                        <h5 class="card-title">List Users</h5>
+                        <a th:href="@{/admin/users}" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building fs-1"></i>
+                        <h5 class="card-title">List Hotels</h5>
+                        <a th:href="@{/admin/hotels}" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bookmark-check fs-1"></i>
+                        <h5 class="card-title">List Bookings</h5>
+                        <a th:href="@{/admin/bookings}" class="btn btn-primary">Go</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
 </body>
 </html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/layout}">
+<head>
+    <title>Registration Page</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+<div class="container">
+    <div class="row col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">Hotel Manager Registration</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" th:action="@{/register/manager}" th:object="${user}">
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="username">Email:</label>
+                        <input class="form-control" id="username" type="email" th:field="*{username}"
+                               placeholder="Enter email address">
+                        <p class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="password">Password:</label>
+                        <input class="form-control" id="password" type="password" th:field="*{password}"
+                               placeholder="Enter password">
+                        <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="name">First Name:</label>
+                        <input class="form-control" id="name" type="text" th:field="*{name}" placeholder="Enter first name">
+                        <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="form-label" for="lastName">Last Name:</label>
+                        <input class="form-control" id="lastName" type="text" th:field="*{lastName}"
+                               placeholder="Enter last name">
+                        <p class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <span>Already registered? <a th:href="@{/login}">Login here</a></span>
+                    </div>
+                    <div class="alert alert-success" th:if="${param.success}">
+                        Registration Successful!
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</th:block>
+</body>
+</html>
