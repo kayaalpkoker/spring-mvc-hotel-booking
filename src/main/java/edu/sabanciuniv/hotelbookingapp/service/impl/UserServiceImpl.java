@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,9 @@ public class UserServiceImpl implements UserService {
     public User save(UserRegistrationDTO registrationDTO) {
 
         Optional<User> existingUser = Optional.ofNullable(userRepository.findByUsername(registrationDTO.getUsername()));
-        if (existingUser.isPresent()) {throw new UsernameAlreadyExistsException("This username is already registered!");}
+        if (existingUser.isPresent()) {
+            throw new UsernameAlreadyExistsException("This username is already registered!");
+        }
 
         Role userRole = roleRepository.findByRoleType(registrationDTO.getRoleType());
 
@@ -60,15 +63,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        return Optional.ofNullable(userRepository.findByUsername(username));
+    public UserDTO findByUsername(String username) {
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
+        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
+        return convertModelToDTO(user);
+    }
+
+    @Override
+    public UserDTO findUserById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return convertModelToDTO(user);
     }
 
     @Override
     public List<UserDTO> findAllUsers() {
         List<User> userList = userRepository.findAll();
-        // TODO: 14.07.2023 // User to DTO mapping 
-        return null;
+
+        List<UserDTO> userDTOList = new ArrayList<>();
+        for (User user : userList) {
+            UserDTO userDTO = convertModelToDTO(user);
+            userDTOList.add(userDTO);
+        }
+        return userDTOList;
+    }
+
+    @Override
+    public void updateUser(UserDTO userDTO) {
+        Optional<User> userOptional = userRepository.findById(userDTO.getId());
+        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        user.setUsername(userDTO.getUsername());
+        user.setName(StringUtils.capitalize(userDTO.getName().trim()));
+        user.setLastName(StringUtils.capitalize(userDTO.getLastName().trim()));
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -104,6 +140,17 @@ public class UserServiceImpl implements UserService {
         user.setUsername(resetUsernameDTO.getNewUsername());
 
         return userRepository.save(user);
+    }
+
+    private UserDTO convertModelToDTO(User user) {
+        UserDTO userDTO = UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .name(user.getName())
+                .lastName(user.getLastName())
+                .role(user.getRole())
+                .build();
+        return userDTO;
     }
 
 }

@@ -7,15 +7,20 @@ import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
     User save(UserRegistrationDTO registrationDTO);
 
-    Optional<User> findByUsername(String username);
+    UserDTO findByUsername(String username);
+
+    UserDTO findUserById(Long id);
 
     List<UserDTO> findAllUsers();
+
+    void updateUser(UserDTO userDTO);
+
+    void deleteUserById(Long id);
 
     User resetPassword(ResetPasswordDTO resetPasswordDTO);
 
