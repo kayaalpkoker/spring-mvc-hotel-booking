@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserRegistrationDTO registrationDTO) {
-
         Optional<User> existingUser = Optional.ofNullable(userRepository.findByUsername(registrationDTO.getUsername()));
         if (existingUser.isPresent()) {
             throw new UsernameAlreadyExistsException("This username is already registered!");
@@ -63,11 +62,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findByUsername(String username) {
+    public Optional<User> findUserByUsername(String username) {
+        return Optional.ofNullable(userRepository.findByUsername(username));
+    }
+
+    @Override
+    public UserDTO findUserDTOByUsername(String username) {
         Optional<User> userOptional = Optional.ofNullable(userRepository.findByUsername(username));
         User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
-        return convertModelToDTO(user);
+        return mapUserToUserDTO(user);
     }
 
     @Override
@@ -75,7 +79,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(id);
         User user = userOptional.orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        return convertModelToDTO(user);
+        return mapUserToUserDTO(user);
     }
 
     @Override
@@ -84,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
         List<UserDTO> userDTOList = new ArrayList<>();
         for (User user : userList) {
-            UserDTO userDTO = convertModelToDTO(user);
+            UserDTO userDTO = mapUserToUserDTO(user);
             userDTOList.add(userDTO);
         }
         return userDTOList;
@@ -142,7 +146,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    private UserDTO convertModelToDTO(User user) {
+    private UserDTO mapUserToUserDTO(User user) {
         UserDTO userDTO = UserDTO.builder()
                 .id(user.getId())
                 .username(user.getUsername())

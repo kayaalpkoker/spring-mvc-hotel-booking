@@ -1,7 +1,7 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
 import edu.sabanciuniv.hotelbookingapp.model.RoleType;
-import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
+import edu.sabanciuniv.hotelbookingapp.model.User;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.validation.Valid;
@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,8 +37,8 @@ public class AuthController {
 
     @PostMapping("/register/customer")
     public String registerCustomerAccount(@Valid @ModelAttribute("user") UserRegistrationDTO registrationDTO, BindingResult result) {
-        UserDTO existingUser = userService.findByUsername(registrationDTO.getUsername());
-        if (existingUser != null) {
+        Optional<User> existingUser = userService.findUserByUsername(registrationDTO.getUsername());
+        if (existingUser.isPresent()) {
             result.rejectValue("username", "user.exists", "Username is already registered!");
             return "register-customer";
         }
@@ -55,8 +57,8 @@ public class AuthController {
 
     @PostMapping("/register/manager")
     public String registerManagerAccount(@Valid @ModelAttribute("user") UserRegistrationDTO registrationDTO, BindingResult result) {
-        UserDTO existingUser = userService.findByUsername(registrationDTO.getUsername());
-        if (existingUser != null) {
+        Optional<User> existingUser = userService.findUserByUsername(registrationDTO.getUsername());
+        if (existingUser.isPresent()) {
             result.rejectValue("username", "user.exists", "Username is already registered!");
             return "register-manager";
         }
