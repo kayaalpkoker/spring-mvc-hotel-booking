@@ -11,28 +11,28 @@ public class HotelManagerController {
 
     @GetMapping("/dashboard")
     public String dashboard() {
-        return "manager-dashboard";
+        return "hotelmanager/dashboard";
     }
 
     @GetMapping("/hotels")
     public String manageHotels() {
-        return "manager-hotels";
+        return "hotelmanager/hotels";
     }
 
     @GetMapping("/hotels/add")
     public String addHotel() {
-        return "manager-hotel-add";
+        return "hotelmanager/hotel-add";
     }
 
     @GetMapping("/hotels/{hotelId}/edit")
     public String editHotel(@PathVariable Long hotelId) {
         // hotelId can be used to load the particular hotel's data
-        return "manager-hotel-edit";
+        return "hotelmanager/hotel-edit";
     }
 
     @GetMapping("/bookings")
     public String manageBookings() {
-        return "manager-bookings";
+        return "hotelmanager/bookings";
     }
 
 }
