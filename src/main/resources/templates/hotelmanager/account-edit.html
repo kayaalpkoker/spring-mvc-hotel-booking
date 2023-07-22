@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/layout-main}">
 <head>
-    <title>Registration Page</title>
+    <title>Edit Account</title>
 </head>
 <body>
 <th:block layout:fragment="content">
@@ -10,21 +10,15 @@
         <div class="row col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="text-center">Customer Registration</h2>
+                    <h2 class="text-center">User Account Editing</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post" th:action="@{/register/customer}" th:object="${user}">
+                    <form method="post" th:action="@{/manager/account/edit}" th:object="${user}">
                         <div class="form-group mb-3">
                             <label class="form-label" for="username">Email:</label>
                             <input class="form-control" id="username" type="email" th:field="*{username}"
                                    placeholder="Enter email address">
                             <p class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label" for="password">Password:</label>
-                            <input class="form-control" id="password" type="password" th:field="*{password}"
-                                   placeholder="Enter password">
-                            <p class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label" for="name">First Name:</label>
@@ -39,11 +33,8 @@
                             <p class="text-danger" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
                         </div>
                         <div class="form-group mb-3">
-                            <button type="submit" class="btn btn-primary">Register</button>
-                            <span>Already registered? <a th:href="@{/login}">Login here</a></span>
-                        </div>
-                        <div class="alert alert-success" th:if="${param.success}">
-                            Registration Successful!
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <a th:href="@{/manager/account}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

@@ -26,9 +26,28 @@
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/login}">Login</a>
                 </li>
+                <!-- Admin links -->
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a>
+                </li>
+                <!-- Customer links -->
+                <li class="nav-item" sec:authorize="hasRole('ROLE_CUSTOMER')">
+                    <a class="nav-link" th:href="@{/customer/dashboard}">Dashboard</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_CUSTOMER')">
+                    <a class="nav-link" th:href="@{/customer/account}">My Account</a>
+                </li>
+                <!-- Hotel Manager links -->
+                <li class="nav-item" sec:authorize="hasRole('ROLE_HOTEL_MANAGER')">
+                    <a class="nav-link" th:href="@{/manager/dashboard}">Dashboard</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_HOTEL_MANAGER')">
+                    <a class="nav-link" th:href="@{/manager/account}">My Account</a>
+                </li>
+                <!-- Logout -->
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form class="form-inline mt-2 mt-md-0" method="post" th:action="@{/logout}">
-                    <button class="btn btn-link my-2 my-sm-0" type="submit">Logout</button>
+                        <button class="btn btn-link my-2 my-sm-0" type="submit">Logout</button>
                     </form>
                 </li>
             </ul>

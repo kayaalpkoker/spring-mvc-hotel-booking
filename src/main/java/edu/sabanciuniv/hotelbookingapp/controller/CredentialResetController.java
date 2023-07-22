@@ -1,18 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
-import edu.sabanciuniv.hotelbookingapp.exception.UsernameAlreadyExistsException;
-import edu.sabanciuniv.hotelbookingapp.model.dto.ResetPasswordDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.ResetUsernameDTO;
-import edu.sabanciuniv.hotelbookingapp.service.UserService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-
-@Controller
+/*@Controller
 @RequiredArgsConstructor
 public class CredentialResetController {
 
@@ -57,3 +45,5 @@ public class CredentialResetController {
     }
 
 }
+
+ */

@@ -1,5 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
+import edu.sabanciuniv.hotelbookingapp.exception.UsernameAlreadyExistsException;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.validation.Valid;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -23,7 +25,6 @@ public class AdminController {
         return "admin/dashboard";
     }
 
-
     @GetMapping("/users")
     public String listUsers(Model model) {
         List<UserDTO> userDTOList = userService.findAllUsers();
@@ -32,22 +33,30 @@ public class AdminController {
     }
 
     @GetMapping("/users/edit/{id}")
-    public String editUserForm(@PathVariable Long id, Model model) {
+    public String showEditUserForm(@PathVariable Long id, Model model) {
         UserDTO userDTO = userService.findUserById(id);
         model.addAttribute("user", userDTO);
         return "admin/users-edit";
     }
 
     @PostMapping("/users/edit/{id}")
-    public String editUser(@PathVariable Long id, @Valid @ModelAttribute("user") UserDTO userDTO, BindingResult result) {
+    public String editUser(@PathVariable Long id, @Valid @ModelAttribute("user") UserDTO userDTO, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "admin/users-edit";
         }
-        userService.updateUser(userDTO);
-        return "redirect:/admin/users";
+        try {
+            userService.updateUser(userDTO);
+        } catch (UsernameAlreadyExistsException e) {
+            result.rejectValue("username", "user.exists", "Username is already registered!");
+            return "admin/users-edit";
+        }
+
+        redirectAttributes.addFlashAttribute("updatedUserId", userDTO.getId());
+        return "redirect:/admin/users?success";
     }
 
-    @DeleteMapping("/users/delete/{id}")
+    // Workaround for @DeleteMapping via post method
+    @PostMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUserById(id);
         return "redirect:/admin/users";

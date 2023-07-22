@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
+<head>
+    <title>Account Details</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div th:if="${param.success}">
+                    <div class="alert alert-success">User info successfully updated</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center">User Account Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group mb-3 row">
+                                <label class="col-sm-3 col-form-label fw-bold" for="username">Username:</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control-plaintext" id="username" readonly type="text"
+                                           th:value="${user.username}">
+                                </div>
+                            </div>
+                            <div class="form-group mb-3 row">
+                                <label class="col-sm-3 col-form-label fw-bold" for="name">First Name:</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control-plaintext" id="name" readonly type="text"
+                                           th:value="${user.name}">
+                                </div>
+                            </div>
+                            <div class="form-group mb-3 row">
+                                <label class="col-sm-3 col-form-label fw-bold" for="lastName">Last Name:</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control-plaintext" id="lastName" readonly type="text"
+                                           th:value="${user.lastName}">
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <a th:href="@{/manager/account/edit}" class="btn btn-primary">Edit User Info</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

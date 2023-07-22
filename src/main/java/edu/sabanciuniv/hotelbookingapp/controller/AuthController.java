@@ -1,7 +1,7 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
+import edu.sabanciuniv.hotelbookingapp.exception.UsernameAlreadyExistsException;
 import edu.sabanciuniv.hotelbookingapp.model.RoleType;
-import edu.sabanciuniv.hotelbookingapp.model.User;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.validation.Valid;
@@ -11,8 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,17 +35,8 @@ public class AuthController {
 
     @PostMapping("/register/customer")
     public String registerCustomerAccount(@Valid @ModelAttribute("user") UserRegistrationDTO registrationDTO, BindingResult result) {
-        Optional<User> existingUser = userService.findUserByUsername(registrationDTO.getUsername());
-        if (existingUser.isPresent()) {
-            result.rejectValue("username", "user.exists", "Username is already registered!");
-            return "register-customer";
-        }
-        if (result.hasErrors()) {
-            return "register-customer";
-        }
         registrationDTO.setRoleType(RoleType.CUSTOMER);
-        userService.save(registrationDTO);
-        return "redirect:/register/customer?success";
+        return registerUser(registrationDTO, result, "register-customer", "register/customer");
     }
 
     @GetMapping("/register/manager")
@@ -57,17 +46,21 @@ public class AuthController {
 
     @PostMapping("/register/manager")
     public String registerManagerAccount(@Valid @ModelAttribute("user") UserRegistrationDTO registrationDTO, BindingResult result) {
-        Optional<User> existingUser = userService.findUserByUsername(registrationDTO.getUsername());
-        if (existingUser.isPresent()) {
-            result.rejectValue("username", "user.exists", "Username is already registered!");
-            return "register-manager";
-        }
-        if (result.hasErrors()) {
-            return "register-manager";
-        }
         registrationDTO.setRoleType(RoleType.HOTEL_MANAGER);
-        userService.save(registrationDTO);
-        return "redirect:/register/manager?success";
+        return registerUser(registrationDTO, result, "register-manager", "register/manager");
+    }
+
+    private String registerUser(UserRegistrationDTO registrationDTO, BindingResult result, String view, String redirectUrl) {
+        if (result.hasErrors()) {
+            return view;
+        }
+        try {
+            userService.save(registrationDTO);
+        } catch (UsernameAlreadyExistsException e) {
+            result.rejectValue("username", "user.exists", e.getMessage());
+            return view;
+        }
+        return "redirect:/" + redirectUrl + "?success";
     }
 
 }
