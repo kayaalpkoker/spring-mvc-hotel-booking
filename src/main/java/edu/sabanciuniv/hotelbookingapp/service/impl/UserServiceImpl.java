@@ -12,6 +12,7 @@ import edu.sabanciuniv.hotelbookingapp.repository.UserRepository;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,6 +30,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -39,6 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(UserRegistrationDTO registrationDTO) {
+        log.info("Attempting to save a new user: {}", registrationDTO.getUsername());
         Optional<User> existingUser = Optional.ofNullable(userRepository.findByUsername(registrationDTO.getUsername()));
         if (existingUser.isPresent()) {
             throw new UsernameAlreadyExistsException("This username is already registered!");
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService {
             hotelManagerRepository.save(hotelManager);
         }
 
+        log.info("Successfully saved new user: {}", registrationDTO.getUsername());
         return userRepository.save(user);
     }
 
@@ -93,6 +97,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateUser(UserDTO userDTO) {
+        log.info("Attempting to update user with ID: {}", userDTO.getId());
         User user = userRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -102,6 +107,7 @@ public class UserServiceImpl implements UserService {
 
         updateUserData(user, userDTO);
         userRepository.save(user);
+        log.info("Successfully updated user with id: {}", userDTO.getId());
     }
 
     @Override
@@ -109,6 +115,7 @@ public class UserServiceImpl implements UserService {
     public void updateLoggedInUser(UserDTO userDTO) {
         String loggedInUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         User loggedInUser = userRepository.findByUsername(loggedInUsername);
+        log.info("Attempting to update logged in user with ID: {}", loggedInUser.getId());
 
         if (usernameExistsAndNotSameUser(userDTO.getUsername(), loggedInUser.getId())) {
             throw new UsernameAlreadyExistsException("This username is already registered!");
@@ -116,6 +123,7 @@ public class UserServiceImpl implements UserService {
 
         updateUserData(loggedInUser, userDTO);
         userRepository.save(loggedInUser);
+        log.info("Successfully updated logged in user with id: {}", loggedInUser.getId());
 
         // Create new authentication token
         updateAuthentication(userDTO);
@@ -123,9 +131,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long id) {
+        log.info("Attempting to delete user with ID: {}", id);
         userRepository.deleteById(id);
+        log.info("Successfully deleted user with ID: {}", id);
     }
 
+    // TODO: 23.07.2023
     @Override
     public User resetPassword(ResetPasswordDTO resetPasswordDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

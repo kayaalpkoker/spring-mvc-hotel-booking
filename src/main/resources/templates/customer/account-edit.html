@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/layout-main}">
 <head>
-    <title>Edit Account</title>
+    <title>Customer Edit Account</title>
 </head>
 <body>
 <th:block layout:fragment="content">
@@ -13,7 +13,7 @@
                     <h2 class="text-center">User Account Editing</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post" th:action="@{/manager/account/edit}" th:object="${user}">
+                    <form method="post" th:action="@{/customer/account/edit}" th:object="${user}">
                         <div class="form-group mb-3">
                             <label class="form-label" for="username">Email:</label>
                             <input class="form-control" id="username" type="email" th:field="*{username}"

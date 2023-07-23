@@ -6,22 +6,6 @@ public class CredentialResetController {
 
     private final UserService userService;
 
-    @GetMapping("/reset-username")
-    public String showResetUsernameForm(@ModelAttribute("resetUsername") ResetUsernameDTO resetUsernameDTO) {
-        return "reset-username";
-    }
-
-    @PostMapping("/reset-username/save")
-    public String resetUsername(@Valid @ModelAttribute("resetUsername") ResetUsernameDTO resetUsernameDTO, BindingResult result) {
-        try {
-            userService.resetUsername(resetUsernameDTO);
-        } catch (UsernameAlreadyExistsException e) {
-            result.rejectValue("newUsername", "username.duplicate", "Username is already taken!");
-            return "reset-username";
-        }
-        return "redirect:/user-dashboard?resetSuccess";
-    }
-
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@ModelAttribute("resetPassword") ResetPasswordDTO resetPasswordDTO) {
         return "reset-password";
