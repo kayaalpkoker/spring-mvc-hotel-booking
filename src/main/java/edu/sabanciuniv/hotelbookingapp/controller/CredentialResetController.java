@@ -1,38 +1,10 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
-import edu.sabanciuniv.hotelbookingapp.exception.UsernameAlreadyExistsException;
-import edu.sabanciuniv.hotelbookingapp.model.dto.ResetPasswordDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.ResetUsernameDTO;
-import edu.sabanciuniv.hotelbookingapp.service.UserService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-
-@Controller
+/*@Controller
 @RequiredArgsConstructor
 public class CredentialResetController {
 
     private final UserService userService;
-
-    @GetMapping("/reset-username")
-    public String showResetUsernameForm(@ModelAttribute("resetUsername") ResetUsernameDTO resetUsernameDTO) {
-        return "reset-username";
-    }
-
-    @PostMapping("/reset-username/save")
-    public String resetUsername(@Valid @ModelAttribute("resetUsername") ResetUsernameDTO resetUsernameDTO, BindingResult result) {
-        try {
-            userService.resetUsername(resetUsernameDTO);
-        } catch (UsernameAlreadyExistsException e) {
-            result.rejectValue("newUsername", "username.duplicate", "Username is already taken!");
-            return "reset-username";
-        }
-        return "redirect:/user-dashboard?resetSuccess";
-    }
 
     @GetMapping("/reset-password")
     public String showResetPasswordForm(@ModelAttribute("resetPassword") ResetPasswordDTO resetPasswordDTO) {
@@ -57,3 +29,5 @@ public class CredentialResetController {
     }
 
 }
+
+ */

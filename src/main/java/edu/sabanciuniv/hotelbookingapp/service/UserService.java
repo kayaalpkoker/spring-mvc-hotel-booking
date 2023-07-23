@@ -2,7 +2,6 @@ package edu.sabanciuniv.hotelbookingapp.service;
 
 import edu.sabanciuniv.hotelbookingapp.model.User;
 import edu.sabanciuniv.hotelbookingapp.model.dto.ResetPasswordDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.ResetUsernameDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
 
@@ -13,12 +12,21 @@ public interface UserService {
 
     User save(UserRegistrationDTO registrationDTO);
 
-    Optional<User> findByUsername(String username);
+    // For registration
+    Optional<User> findUserByUsername(String username);
+
+    UserDTO findUserDTOByUsername(String username);
+
+    UserDTO findUserById(Long id);
 
     List<UserDTO> findAllUsers();
 
-    User resetPassword(ResetPasswordDTO resetPasswordDTO);
+    void updateUser(UserDTO userDTO);
 
-    User resetUsername(ResetUsernameDTO resetUsernameDTO);
+    void updateLoggedInUser(UserDTO userDTO);
+
+    void deleteUserById(Long id);
+
+    User resetPassword(ResetPasswordDTO resetPasswordDTO);
 
 }

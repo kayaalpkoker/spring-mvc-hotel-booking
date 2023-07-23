@@ -30,7 +30,7 @@ public class TestDataInitializer implements CommandLineRunner {
             log.warn("Checking if test data persistence is required...");
 
             if (roleRepository.count() == 0 && userRepository.count() == 0) {
-                log.warn("Initiating test data persistence");
+                log.info("Initiating test data persistence");
 
                 Role adminRole = new Role(RoleType.ADMIN);
                 Role customerRole = new Role(RoleType.CUSTOMER);
@@ -39,7 +39,7 @@ public class TestDataInitializer implements CommandLineRunner {
                 roleRepository.save(adminRole);
                 roleRepository.save(customerRole);
                 roleRepository.save(hotelManagerRole);
-                log.warn("Role data persisted");
+                log.info("Role data persisted");
 
                 User user1 = User.builder().username("admin@admin.com").password(passwordEncoder.encode("111")).name("Admin").lastName("Admin").role(adminRole).build();
                 User user2 = User.builder().username("customer1@customer.com").password(passwordEncoder.encode("222")).name("Kaya Alp").lastName("Koker").role(customerRole).build();
@@ -60,9 +60,9 @@ public class TestDataInitializer implements CommandLineRunner {
                 customerRepository.save(c1);
                 hotelManagerRepository.save(hm1);
                 hotelManagerRepository.save(hm2);
-                log.warn("User data persisted");
+                log.info("User data persisted");
             } else {
-                log.warn("Test data persistence is not required");
+                log.info("Test data persistence is not required");
             }
             log.warn("App ready");
         } catch (DataAccessException e) {

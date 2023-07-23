@@ -8,13 +8,10 @@
 </head>
 <body class="d-flex flex-column vh-100">
 <th:block th:insert="~{fragment/navbar :: navbar}"></th:block>
-
 <div class="flex-grow-1 mt-3">
     <th:block layout:fragment="content"></th:block>
 </div>
-
 <th:block th:insert="~{fragment/footer :: footer}"></th:block>
-
 <th:block th:insert="~{fragment/bootstrap :: bootstrap-js}"></th:block>
 </body>
 </html>
