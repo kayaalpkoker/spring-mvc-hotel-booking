@@ -64,7 +64,7 @@ public class AuthController {
             return view;
         }
         try {
-            userService.save(registrationDTO);
+            userService.saveUser(registrationDTO);
             log.info("User registration successful: {}", registrationDTO.getUsername());
         } catch (UsernameAlreadyExistsException e) {
             log.error("Registration failed due to username already exists: {}", e.getMessage());

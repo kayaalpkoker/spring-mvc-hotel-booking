@@ -40,8 +40,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User save(UserRegistrationDTO registrationDTO) {
+    @Transactional
+    public User saveUser(UserRegistrationDTO registrationDTO) {
         log.info("Attempting to save a new user: {}", registrationDTO.getUsername());
+
         Optional<User> existingUser = Optional.ofNullable(userRepository.findByUsername(registrationDTO.getUsername()));
         if (existingUser.isPresent()) {
             throw new UsernameAlreadyExistsException("This username is already registered!");
@@ -57,13 +59,14 @@ public class UserServiceImpl implements UserService {
             hotelManagerRepository.save(hotelManager);
         }
 
+        User savedUser = userRepository.save(user);
         log.info("Successfully saved new user: {}", registrationDTO.getUsername());
-        return userRepository.save(user);
+        return savedUser;
     }
 
     @Override
-    public Optional<User> findUserByUsername(String username) {
-        return Optional.ofNullable(userRepository.findByUsername(username));
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
