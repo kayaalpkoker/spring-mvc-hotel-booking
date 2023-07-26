@@ -1,7 +1,10 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
+import edu.sabanciuniv.hotelbookingapp.exception.HotelAlreadyExistsException;
 import edu.sabanciuniv.hotelbookingapp.exception.UsernameAlreadyExistsException;
+import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
+import edu.sabanciuniv.hotelbookingapp.service.HotelService;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +22,7 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
+    private final HotelService hotelService;
 
     @GetMapping("/dashboard")
     public String dashboard() {
@@ -63,8 +67,39 @@ public class AdminController {
     }
 
     @GetMapping("/hotels")
-    public String listHotels() {
+    public String listHotels(Model model) {
+        List<HotelDTO> hotelDTOList = hotelService.findAllHotels();
+        model.addAttribute("hotels", hotelDTOList);
         return "admin/hotels";
+    }
+
+    @GetMapping("/hotels/edit/{id}")
+    public String showEditHotelForm(@PathVariable Long id, Model model) {
+        HotelDTO hotelDTO = hotelService.findHotelById(id);
+        model.addAttribute("hotel", hotelDTO);
+        return "admin/hotels-edit";
+    }
+
+    @PostMapping("/hotels/edit/{id}")
+    public String editHotel(@PathVariable Long id, @Valid @ModelAttribute("hotel") HotelDTO hotelDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "admin/hotels-edit";
+        }
+        try {
+            hotelService.updateHotel(hotelDTO);
+        } catch (HotelAlreadyExistsException e) {
+            result.rejectValue("name", "hotel.exists", e.getMessage());
+            return "admin/hotels-edit";
+        }
+
+        redirectAttributes.addFlashAttribute("updatedHotelId", hotelDTO.getId());
+        return "redirect:/admin/hotels?success";
+    }
+
+    @PostMapping("/hotels/delete/{id}")
+    public String deleteHotel(@PathVariable Long id) {
+        hotelService.deleteHotelById(id);
+        return "redirect:/admin/hotels";
     }
 
     @GetMapping("/bookings")

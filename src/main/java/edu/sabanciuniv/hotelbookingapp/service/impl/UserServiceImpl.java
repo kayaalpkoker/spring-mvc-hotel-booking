@@ -10,6 +10,7 @@ import edu.sabanciuniv.hotelbookingapp.repository.HotelManagerRepository;
 import edu.sabanciuniv.hotelbookingapp.repository.RoleRepository;
 import edu.sabanciuniv.hotelbookingapp.repository.UserRepository;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,8 +41,10 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User save(UserRegistrationDTO registrationDTO) {
+    @Transactional
+    public User saveUser(UserRegistrationDTO registrationDTO) {
         log.info("Attempting to save a new user: {}", registrationDTO.getUsername());
+
         Optional<User> existingUser = Optional.ofNullable(userRepository.findByUsername(registrationDTO.getUsername()));
         if (existingUser.isPresent()) {
             throw new UsernameAlreadyExistsException("This username is already registered!");
@@ -57,13 +60,14 @@ public class UserServiceImpl implements UserService {
             hotelManagerRepository.save(hotelManager);
         }
 
+        User savedUser = userRepository.save(user);
         log.info("Successfully saved new user: {}", registrationDTO.getUsername());
-        return userRepository.save(user);
+        return savedUser;
     }
 
     @Override
-    public Optional<User> findUserByUsername(String username) {
-        return Optional.ofNullable(userRepository.findByUsername(username));
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -76,8 +80,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findUserById(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("User not found"));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));
 
         return mapUserToUserDto(user);
     }
@@ -98,6 +102,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUser(UserDTO userDTO) {
         log.info("Attempting to update user with ID: {}", userDTO.getId());
+
         User user = userRepository.findById(userDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -105,9 +110,9 @@ public class UserServiceImpl implements UserService {
             throw new UsernameAlreadyExistsException("This username is already registered!");
         }
 
-        updateUserData(user, userDTO);
+        setFormattedDataToUser(user, userDTO);
         userRepository.save(user);
-        log.info("Successfully updated user with id: {}", userDTO.getId());
+        log.info("Successfully updated existing user with ID: {}", userDTO.getId());
     }
 
     @Override
@@ -121,9 +126,9 @@ public class UserServiceImpl implements UserService {
             throw new UsernameAlreadyExistsException("This username is already registered!");
         }
 
-        updateUserData(loggedInUser, userDTO);
+        setFormattedDataToUser(loggedInUser, userDTO);
         userRepository.save(loggedInUser);
-        log.info("Successfully updated logged in user with id: {}", loggedInUser.getId());
+        log.info("Successfully updated logged in user with ID: {}", loggedInUser.getId());
 
         // Create new authentication token
         updateAuthentication(userDTO);
@@ -158,8 +163,8 @@ public class UserServiceImpl implements UserService {
         return User.builder()
                 .username(registrationDTO.getUsername().trim())
                 .password(passwordEncoder.encode(registrationDTO.getPassword()))
-                .name(StringUtils.capitalize(registrationDTO.getName().trim()))
-                .lastName(StringUtils.capitalize(registrationDTO.getLastName().trim()))
+                .name(formatText(registrationDTO.getName()))
+                .lastName(formatText(registrationDTO.getLastName()))
                 .role(userRole)
                 .build();
     }
@@ -179,14 +184,14 @@ public class UserServiceImpl implements UserService {
         return existingUserWithSameUsername.isPresent() && !existingUserWithSameUsername.get().getId().equals(userId);
     }
 
-    private String formatName(String name) {
-        return StringUtils.capitalize(name.trim());
+    private String formatText(String text) {
+        return StringUtils.capitalize(text.trim());
     }
 
-    private void updateUserData(User user, UserDTO userDTO) {
+    private void setFormattedDataToUser(User user, UserDTO userDTO) {
         user.setUsername(userDTO.getUsername());
-        user.setName(formatName(userDTO.getName()));
-        user.setLastName(formatName(userDTO.getLastName()));
+        user.setName(formatText(userDTO.getName()));
+        user.setLastName(formatText(userDTO.getLastName()));
     }
 
     // In production applications, prefer logging out the user and requiring re-login over the method below.

@@ -6,14 +6,13 @@ import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
-    User save(UserRegistrationDTO registrationDTO);
+    User saveUser(UserRegistrationDTO registrationDTO);
 
     // For registration
-    Optional<User> findUserByUsername(String username);
+    User findUserByUsername(String username);
 
     UserDTO findUserDTOByUsername(String username);
 

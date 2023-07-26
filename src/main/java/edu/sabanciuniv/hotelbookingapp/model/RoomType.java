@@ -1,6 +1,15 @@
 package edu.sabanciuniv.hotelbookingapp.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum RoomType {
 
-    SINGLE, DOUBLE
+    SINGLE(1),
+    DOUBLE(2);
+
+    private final int capacity;
+
 }

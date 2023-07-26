@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
+<head>
+    <title>Add Hotel</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Add New Hotel</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" th:action="@{/manager/hotels/add}" th:object="${hotel}">
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="name">Hotel Name:</label>
+                            <input class="form-control" id="name" type="text" th:field="*{name}"
+                                   placeholder="Enter hotel name">
+                            <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="addressLine">Address Line:</label>
+                            <input class="form-control" id="addressLine" type="text"
+                                   th:field="*{addressDTO.addressLine}"
+                                   placeholder="Enter address line">
+                            <p class="text-danger" th:if="${#fields.hasErrors('addressDTO.addressLine')}"
+                               th:errors="*{addressDTO.addressLine}"></p>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="city">City:</label>
+                            <input class="form-control" id="city" type="text" th:field="*{addressDTO.city}"
+                                   placeholder="Enter city">
+                            <p class="text-danger" th:if="${#fields.hasErrors('addressDTO.city')}"
+                               th:errors="*{addressDTO.city}"></p>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="country">Country:</label>
+                            <input class="form-control" id="country" type="text" th:field="*{addressDTO.country}"
+                                   placeholder="Enter country">
+                            <p class="text-danger" th:if="${#fields.hasErrors('addressDTO.country')}"
+                               th:errors="*{addressDTO.country}"></p>
+                        </div>
+                        <!-- Single Room Count -->
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="singleRoomCount">Single Room Count:</label>
+                            <input class="form-control" id="singleRoomCount" type="number"
+                                   th:field="*{roomCountDTOS[0].count}"
+                                   placeholder="Enter count for single rooms">
+                            <input type="hidden" th:field="*{roomCountDTOS[0].roomType}">
+                            <p class="text-danger" th:if="${#fields.hasErrors('roomCountDTOS[0].count')}"
+                               th:errors="*{roomCountDTOS[0].count}"></p>
+                        </div>
+                        <!-- Double Room Count -->
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="doubleRoomCount">Double Room Count:</label>
+                            <input class="form-control" id="doubleRoomCount" type="number"
+                                   th:field="*{roomCountDTOS[1].count}"
+                                   placeholder="Enter count for double rooms">
+                            <input type="hidden" th:field="*{roomCountDTOS[1].roomType}">
+                            <p class="text-danger" th:if="${#fields.hasErrors('roomCountDTOS[1].count')}"
+                               th:errors="*{roomCountDTOS[1].count}"></p>
+                        </div>
+                        <div class="form-group mb-3">
+                            <button type="submit" class="btn btn-primary">Add Hotel</button>
+                        </div>
+                        <div class="alert alert-success" th:if="${param.success}">
+                            Hotel Added Successfully!
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

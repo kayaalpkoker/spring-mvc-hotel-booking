@@ -17,7 +17,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
     private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
@@ -37,6 +37,8 @@ public class SecurityConfiguration {
                         authorize.requestMatchers("/css/**", "/js/**", "/webjars/**", "/img/**").permitAll()
                                 .requestMatchers("/", "/index", "/register/**").permitAll()
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                                .requestMatchers("/customer/**").hasRole("CUSTOMER")
+                                .requestMatchers("/manager/**").hasRole("HOTEL_MANAGER")
                                 .anyRequest().authenticated())
                 .formLogin(
                         form -> form
