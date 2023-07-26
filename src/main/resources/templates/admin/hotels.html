@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Hotel List</title>
 </head>
 <body>
-
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Hotel List</h2>
+                <div th:if="${param.success}">
+                    <div class="alert alert-success">
+                        Hotel (ID: <span th:text="${updatedHotelId}"></span>) info has been successfully updated
+                    </div>
+                </div>
+                <table class="table table-striped align-middle">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Hotel Manager</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="align-middle" th:each="hotel : ${hotels}">
+                        <td th:text="${hotel.id}"></td>
+                        <td th:text="${hotel.name}"></td>
+                        <td th:text="${hotel.managerUsername}"></td>
+                        <td>
+                            <a th:href="@{/admin/hotels/edit/{id}(id=${hotel.id})}">Edit</a>
+                        </td>
+                        <td>
+                            <form method="post"
+                                  th:action="@{/admin/hotels/delete/{id}(id=${hotel.id})}"
+                                  onsubmit="return confirm('Are you sure you want to delete this hotel?');">
+                                <input type="hidden" name="_method" value="DELETE"/>
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
 </body>
 </html>

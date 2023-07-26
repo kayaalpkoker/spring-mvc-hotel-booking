@@ -23,7 +23,7 @@ public class Hotel {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     @ElementCollection

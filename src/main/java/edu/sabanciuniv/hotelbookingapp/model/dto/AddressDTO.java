@@ -16,7 +16,7 @@ public class AddressDTO {
     private Long id;
 
     @NotBlank(message = "Address line cannot be empty")
-    @Pattern(regexp = "^[A-Za-z0-9 .,-/]+$", message = "Address line must only contain letters, numbers, and .,-/")
+    @Pattern(regexp = "^[A-Za-z0-9 .,:-]*$", message = "Address line can only contain letters, numbers, and some special characters (. , : - )")
     private String addressLine;
 
     @NotBlank(message = "City cannot be empty")

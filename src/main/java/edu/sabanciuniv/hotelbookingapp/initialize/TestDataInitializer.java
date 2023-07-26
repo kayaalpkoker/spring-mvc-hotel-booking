@@ -10,6 +10,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -21,6 +24,8 @@ public class TestDataInitializer implements CommandLineRunner {
     private final CustomerRepository customerRepository;
     private final HotelManagerRepository hotelManagerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AddressRepository addressRepository;
+    private final HotelRepository hotelRepository;
 
     @Override
     @Transactional
@@ -41,10 +46,10 @@ public class TestDataInitializer implements CommandLineRunner {
                 roleRepository.save(hotelManagerRole);
                 log.info("Role data persisted");
 
-                User user1 = User.builder().username("admin@admin.com").password(passwordEncoder.encode("111")).name("Admin").lastName("Admin").role(adminRole).build();
-                User user2 = User.builder().username("customer1@customer.com").password(passwordEncoder.encode("222")).name("Kaya Alp").lastName("Koker").role(customerRole).build();
-                User user3 = User.builder().username("manager1@manager.com").password(passwordEncoder.encode("333")).name("John").lastName("Doe").role(hotelManagerRole).build();
-                User user4 = User.builder().username("manager2@manager.com").password(passwordEncoder.encode("444")).name("Max").lastName("Mustermann").role(hotelManagerRole).build();
+                User user1 = User.builder().username("admin@hotel.com").password(passwordEncoder.encode("1")).name("Admin").lastName("Admin").role(adminRole).build();
+                User user2 = User.builder().username("customer1@hotel.com").password(passwordEncoder.encode("1")).name("Kaya Alp").lastName("Koker").role(customerRole).build();
+                User user3 = User.builder().username("manager1@hotel.com").password(passwordEncoder.encode("1")).name("John").lastName("Doe").role(hotelManagerRole).build();
+                User user4 = User.builder().username("manager2@hotel.com").password(passwordEncoder.encode("1")).name("Max").lastName("Mustermann").role(hotelManagerRole).build();
 
                 userRepository.save(user1);
                 userRepository.save(user2);
@@ -61,6 +66,48 @@ public class TestDataInitializer implements CommandLineRunner {
                 hotelManagerRepository.save(hm1);
                 hotelManagerRepository.save(hm2);
                 log.info("User data persisted");
+
+                Address address1 = Address.builder()
+                        .addressLine("Visnezade, Acisu Sokagi No:19")
+                        .city("Istanbul")
+                        .country("Turkey")
+                        .build();
+
+                Address address2 = Address.builder()
+                        .addressLine("Unter den Linden 77")
+                        .city("Berlin")
+                        .country("Germany")
+                        .build();
+
+                addressRepository.save(address1);
+                addressRepository.save(address2);
+
+                Map<RoomType, Integer> roomCounts1 = new HashMap<>();
+                roomCounts1.put(RoomType.SINGLE, 10);
+                roomCounts1.put(RoomType.DOUBLE, 20);
+
+                Map<RoomType, Integer> roomCounts2 = new HashMap<>();
+                roomCounts2.put(RoomType.SINGLE, 15);
+                roomCounts2.put(RoomType.DOUBLE, 25);
+
+                Hotel hotel1 = Hotel.builder()
+                        .name("Swissotel The Bosphorus Istanbul")
+                        .address(address1)
+                        .roomCounts(roomCounts1)
+                        .hotelManager(hm1)
+                        .build();
+
+                Hotel hotel2 = Hotel.builder()
+                        .name("Hotel Adlon Kempinski Berlin")
+                        .address(address2)
+                        .roomCounts(roomCounts2)
+                        .hotelManager(hm2)
+                        .build();
+
+                hotelRepository.save(hotel1);
+                hotelRepository.save(hotel2);
+
+                log.info("Hotel test data persisted");
             } else {
                 log.info("Test data persistence is not required");
             }

@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layout/layout-main}">
 <head>
-    <title>Add Hotel</title>
+    <title>Edit Hotel</title>
 </head>
 <body>
 <th:block layout:fragment="content">
@@ -10,10 +10,11 @@
         <div class="row col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="text-center">Add New Hotel</h2>
+                    <h2 class="text-center">Edit Hotel</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post" th:action="@{/manager/hotels/add}" th:object="${hotel}">
+                    <form method="post" th:action="@{/admin/hotels/edit/{id}(id=${hotel.id})}" th:object="${hotel}">
+                        <input type="hidden" th:field="*{addressDTO.id}">
                         <div class="form-group mb-3">
                             <label class="form-label" for="name">Hotel Name:</label>
                             <input class="form-control" id="name" type="text" th:field="*{name}"
@@ -63,10 +64,8 @@
                                th:errors="*{roomCountDTOS[1].count}"></p>
                         </div>
                         <div class="form-group mb-3">
-                            <button type="submit" class="btn btn-primary">Add Hotel</button>
-                        </div>
-                        <div class="alert alert-success" th:if="${param.success}">
-                            Hotel Added Successfully!
+                            <button type="submit" class="btn btn-primary">Update Hotel</button>
+                            <a th:href="@{/admin/hotels}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

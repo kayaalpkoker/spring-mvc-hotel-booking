@@ -16,7 +16,7 @@ public class HotelDTO {
     private Long id;
 
     @NotBlank(message = "Hotel name cannot be empty")
-    @Pattern(regexp = "^(?!\\s*$)[A-Za-z ]+$", message = "Hotel name must only contain letters")
+    @Pattern(regexp = "^(?!\\s*$)[A-Za-z0-9 ]+$", message = "Hotel name must only contain letters and numbers")
     private String name;
 
     @Valid
@@ -24,5 +24,7 @@ public class HotelDTO {
 
     @Valid
     private List<RoomCountDTO> roomCountDTOS = new ArrayList<>();
+
+    private String managerUsername;
 
 }

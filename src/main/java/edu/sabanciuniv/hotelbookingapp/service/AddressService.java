@@ -7,4 +7,10 @@ public interface AddressService {
 
     Address saveAddress(AddressDTO addressDTO);
 
+    Address updateAddress(AddressDTO addressDTO);
+
+    AddressDTO findAddressById(Long id);
+
+    void deleteAddress(Long id);
+
 }
