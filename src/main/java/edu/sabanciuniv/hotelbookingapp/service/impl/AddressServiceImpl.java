@@ -60,7 +60,7 @@ public class AddressServiceImpl implements AddressService {
         log.info("Successfully deleted address with ID: {}", id);
     }
 
-    // TODO: 25.07.2023
+    @Override
     public Address mapAddressDtoToAddress(AddressDTO dto) {
         return Address.builder()
                 .addressLine(formatText(dto.getAddressLine()))
@@ -69,6 +69,7 @@ public class AddressServiceImpl implements AddressService {
                 .build();
     }
 
+    @Override
     public AddressDTO mapAddressToAddressDto(Address address) {
         return AddressDTO.builder()
                 .id(address.getId())

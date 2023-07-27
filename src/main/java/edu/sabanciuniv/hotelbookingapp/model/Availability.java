@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Getter
@@ -26,11 +24,9 @@ public class Availability {
 
     private LocalDate date;
 
-    @ElementCollection
-    @CollectionTable(name = "availability_room_counts", joinColumns = @JoinColumn(name = "availability_id"))
-    @MapKeyEnumerated(EnumType.STRING)
-    @MapKeyColumn(name = "room_type")
-    @Column(name = "count")
-    private Map<RoomType, Integer> availableRoomCounts = new HashMap<>();
+    @ManyToOne
+    private Room room;
+
+    private int availableRooms;
 
 }

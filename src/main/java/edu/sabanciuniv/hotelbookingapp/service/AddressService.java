@@ -13,4 +13,9 @@ public interface AddressService {
 
     void deleteAddress(Long id);
 
+    Address mapAddressDtoToAddress(AddressDTO dto);
+
+    AddressDTO mapAddressToAddressDto(Address address);
+
+
 }

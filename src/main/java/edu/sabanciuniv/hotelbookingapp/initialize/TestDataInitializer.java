@@ -10,9 +10,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -82,25 +79,15 @@ public class TestDataInitializer implements CommandLineRunner {
                 addressRepository.save(address1);
                 addressRepository.save(address2);
 
-                Map<RoomType, Integer> roomCounts1 = new HashMap<>();
-                roomCounts1.put(RoomType.SINGLE, 10);
-                roomCounts1.put(RoomType.DOUBLE, 20);
-
-                Map<RoomType, Integer> roomCounts2 = new HashMap<>();
-                roomCounts2.put(RoomType.SINGLE, 15);
-                roomCounts2.put(RoomType.DOUBLE, 25);
-
                 Hotel hotel1 = Hotel.builder()
                         .name("Swissotel The Bosphorus Istanbul")
                         .address(address1)
-                        .roomCounts(roomCounts1)
                         .hotelManager(hm1)
                         .build();
 
                 Hotel hotel2 = Hotel.builder()
                         .name("Hotel Adlon Kempinski Berlin")
                         .address(address2)
-                        .roomCounts(roomCounts2)
                         .hotelManager(hm2)
                         .build();
 
