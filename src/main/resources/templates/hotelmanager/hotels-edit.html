@@ -14,13 +14,13 @@
                 </div>
                 <div class="card-body">
                     <form method="post" th:action="@{/manager/hotels/edit/{id}(id=${hotel.id})}" th:object="${hotel}">
-                        <input type="hidden" th:field="*{addressDTO.id}">
                         <div class="form-group mb-3">
                             <label class="form-label" for="name">Hotel Name:</label>
                             <input class="form-control" id="name" type="text" th:field="*{name}"
                                    placeholder="Enter hotel name">
                             <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
                         </div>
+                        <input type="hidden" th:field="*{addressDTO.id}">
                         <div class="form-group mb-3">
                             <label class="form-label" for="addressLine">Address Line:</label>
                             <input class="form-control" id="addressLine" type="text"
@@ -43,28 +43,45 @@
                             <p class="text-danger" th:if="${#fields.hasErrors('addressDTO.country')}"
                                th:errors="*{addressDTO.country}"></p>
                         </div>
-                        <!-- Single Room Count -->
+                        <!-- Single Room Details -->
                         <div class="form-group mb-3">
+                            <input type="hidden" th:field="*{roomDTOs[0].id}">
                             <label class="form-label" for="singleRoomCount">Single Room Count:</label>
                             <input class="form-control" id="singleRoomCount" type="number"
-                                   th:field="*{roomCountDTOS[0].count}"
+                                   th:field="*{roomDTOs[0].roomCount}"
                                    placeholder="Enter count for single rooms">
-                            <input type="hidden" th:field="*{roomCountDTOS[0].roomType}">
-                            <p class="text-danger" th:if="${#fields.hasErrors('roomCountDTOS[0].count')}"
-                               th:errors="*{roomCountDTOS[0].count}"></p>
+                            <input type="hidden" th:field="*{roomDTOs[0].roomType}">
+                            <p class="text-danger" th:if="${#fields.hasErrors('roomDTOs[0].roomCount')}"
+                               th:errors="*{roomDTOs[0].roomCount}"></p>
+
+                            <label class="form-label" for="singleRoomPrice">Single Room Price:</label>
+                            <input class="form-control" id="singleRoomPrice" type="number" step="0.01"
+                                   th:field="*{roomDTOs[0].pricePerNight}"
+                                   placeholder="Enter price for single rooms">
+                            <p class="text-danger" th:if="${#fields.hasErrors('roomDTOs[0].pricePerNight')}"
+                               th:errors="*{roomDTOs[0].pricePerNight}"></p>
                         </div>
-                        <!-- Double Room Count -->
+                        <!-- Double Room Details -->
                         <div class="form-group mb-3">
+                            <input type="hidden" th:field="*{roomDTOs[1].id}">
                             <label class="form-label" for="doubleRoomCount">Double Room Count:</label>
                             <input class="form-control" id="doubleRoomCount" type="number"
-                                   th:field="*{roomCountDTOS[1].count}"
+                                   th:field="*{roomDTOs[1].roomCount}"
                                    placeholder="Enter count for double rooms">
-                            <input type="hidden" th:field="*{roomCountDTOS[1].roomType}">
-                            <p class="text-danger" th:if="${#fields.hasErrors('roomCountDTOS[1].count')}"
-                               th:errors="*{roomCountDTOS[1].count}"></p>
+                            <input type="hidden" th:field="*{roomDTOs[1].roomType}">
+                            <p class="text-danger" th:if="${#fields.hasErrors('roomDTOs[1].roomCount')}"
+                               th:errors="*{roomDTOs[1].roomCount}"></p>
+                            <label class="form-label" for="doubleRoomPrice">Double Room Price:</label>
+                            <input class="form-control" id="doubleRoomPrice" type="number" step="0.01"
+                                   th:field="*{roomDTOs[1].pricePerNight}"
+                                   placeholder="Enter price for double rooms">
+                            <p class="text-danger" th:if="${#fields.hasErrors('roomDTOs[1].pricePerNight')}"
+                               th:errors="*{roomDTOs[1].pricePerNight}"></p>
                         </div>
+                        <!-- -->
                         <div class="form-group mb-3">
                             <button type="submit" class="btn btn-primary">Update Hotel</button>
+                            <a th:href="@{/admin/hotels}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>

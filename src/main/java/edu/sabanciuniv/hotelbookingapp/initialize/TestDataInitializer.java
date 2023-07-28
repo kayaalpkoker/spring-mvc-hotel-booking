@@ -10,6 +10,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -91,9 +93,39 @@ public class TestDataInitializer implements CommandLineRunner {
                         .hotelManager(hm2)
                         .build();
 
+                Room singleRoom1 = Room.builder()
+                        .roomType(RoomType.SINGLE)
+                        .pricePerNight(100.0)
+                        .roomCount(20)
+                        .hotel(hotel1)
+                        .build();
+
+                Room doubleRoom1 = Room.builder()
+                        .roomType(RoomType.DOUBLE)
+                        .pricePerNight(200.0)
+                        .roomCount(10)
+                        .hotel(hotel1)
+                        .build();
+
+                Room singleRoom2 = Room.builder()
+                        .roomType(RoomType.SINGLE)
+                        .pricePerNight(120.0)
+                        .roomCount(25)
+                        .hotel(hotel2)
+                        .build();
+
+                Room doubleRoom2 = Room.builder()
+                        .roomType(RoomType.DOUBLE)
+                        .pricePerNight(250.0)
+                        .roomCount(15)
+                        .hotel(hotel2)
+                        .build();
+
+                hotel1.getRooms().addAll(Arrays.asList(singleRoom1,doubleRoom1));
+                hotel2.getRooms().addAll(Arrays.asList(singleRoom2,doubleRoom2));
+
                 hotelRepository.save(hotel1);
                 hotelRepository.save(hotel2);
-
                 log.info("Hotel test data persisted");
             } else {
                 log.info("Test data persistence is not required");

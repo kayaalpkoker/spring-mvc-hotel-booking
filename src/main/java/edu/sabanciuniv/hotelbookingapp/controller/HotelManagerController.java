@@ -7,6 +7,7 @@ import edu.sabanciuniv.hotelbookingapp.model.dto.HotelRegistrationDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
 import edu.sabanciuniv.hotelbookingapp.service.HotelService;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -90,8 +91,12 @@ public class HotelManagerController {
             hotelService.updateHotelByManagerId(hotelDTO, managerId);
             redirectAttributes.addFlashAttribute("message", "Hotel (ID: " + id + ") updated successfully");
             return "redirect:/manager/hotels";
+
         } catch (HotelAlreadyExistsException e) {
             result.rejectValue("name", "hotel.exists", e.getMessage());
+            return "hotelmanager/hotels-edit";
+        } catch (EntityNotFoundException e) {
+            result.rejectValue("id", "hotel.notfound", e.getMessage());
             return "hotelmanager/hotels-edit";
         }
     }

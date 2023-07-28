@@ -37,7 +37,6 @@ public class AddressServiceImpl implements AddressService {
 
         Address updatedAddress = addressRepository.save(existingAddress);
         log.info("Successfully updated address with ID: {}", existingAddress.getId());
-
         return updatedAddress;
     }
 

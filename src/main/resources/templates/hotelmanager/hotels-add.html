@@ -76,12 +76,9 @@
                             <p class="text-danger" th:if="${#fields.hasErrors('roomDTOs[1].pricePerNight')}"
                                th:errors="*{roomDTOs[1].pricePerNight}"></p>
                         </div>
-                        <!-- ... -->
+                        <!-- -->
                         <div class="form-group mb-3">
                             <button type="submit" class="btn btn-primary">Add Hotel</button>
-                        </div>
-                        <div class="alert alert-success" th:if="${param.success}">
-                            Hotel Added Successfully!
                         </div>
                     </form>
                 </div>

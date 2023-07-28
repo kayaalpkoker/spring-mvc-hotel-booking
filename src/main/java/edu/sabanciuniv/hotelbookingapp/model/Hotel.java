@@ -25,6 +25,7 @@ public class Hotel {
     private Address address;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Room> rooms = new ArrayList<>();
 
     @OneToMany(mappedBy = "hotel")

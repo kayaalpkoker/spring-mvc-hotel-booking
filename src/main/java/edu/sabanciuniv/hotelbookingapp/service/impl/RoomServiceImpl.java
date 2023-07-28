@@ -5,6 +5,7 @@ import edu.sabanciuniv.hotelbookingapp.model.Room;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
 import edu.sabanciuniv.hotelbookingapp.repository.RoomRepository;
 import edu.sabanciuniv.hotelbookingapp.service.RoomService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,19 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public Room updateRoom(RoomDTO roomDTO) {
-        return null;
+        log.info("Attempting to update room with ID: {}", roomDTO.getId());
+        Room existingRoom = roomRepository.findById(roomDTO.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Room not found"));
+
+        log.info("Room with ID: {} found", roomDTO.getId());
+
+        existingRoom.setRoomType(roomDTO.getRoomType());
+        existingRoom.setRoomCount(roomDTO.getRoomCount());
+        existingRoom.setPricePerNight(roomDTO.getPricePerNight());
+
+        Room updatedRoom = roomRepository.save(existingRoom);
+        log.info("Successfully updated address with ID: {}", existingRoom.getId());
+        return updatedRoom;
     }
 
     @Override

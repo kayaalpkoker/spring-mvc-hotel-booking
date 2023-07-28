@@ -82,7 +82,6 @@ public class HotelServiceImpl implements HotelService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
     @Transactional
     public HotelDTO updateHotel(HotelDTO hotelDTO) {
@@ -100,7 +99,7 @@ public class HotelServiceImpl implements HotelService {
         Address updatedAddress = addressService.updateAddress(hotelDTO.getAddressDTO());
         existingHotel.setAddress(updatedAddress);
 
-        //existingHotel.setRoomCounts(hotelDTO.getRoomCountDTOS().stream().collect(Collectors.toMap(RoomCountDTO::getRoomType, RoomCountDTO::getCount)));
+        hotelDTO.getRoomDTOs().forEach(roomService::updateRoom);
 
         hotelRepository.save(existingHotel);
         log.info("Successfully updated existing hotel with ID: {}", hotelDTO.getId());
@@ -146,7 +145,7 @@ public class HotelServiceImpl implements HotelService {
         Address updatedAddress = addressService.updateAddress(hotelDTO.getAddressDTO());
         existingHotel.setAddress(updatedAddress);
 
-        //existingHotel.setRoomCounts(hotelDTO.getRoomCountDTOS().stream().collect(Collectors.toMap(RoomCountDTO::getRoomType, RoomCountDTO::getCount)));
+        hotelDTO.getRoomDTOs().forEach(roomService::updateRoom);
 
         hotelRepository.save(existingHotel);
         log.info("Successfully updated existing hotel with ID: {} for Manager ID: {}", hotelDTO.getId(), managerId);
