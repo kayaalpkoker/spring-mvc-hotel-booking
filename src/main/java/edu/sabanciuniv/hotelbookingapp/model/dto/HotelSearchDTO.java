@@ -1,0 +1,27 @@
+package edu.sabanciuniv.hotelbookingapp.model.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.FutureOrPresent;
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.LocalDate;
+
+@Data
+@Builder
+public class HotelSearchDTO {
+
+    @NotBlank(message = "City cannot be empty")
+    @Pattern(regexp = "^(?!\\s*$)[A-Za-z ]+$", message = "City must only contain letters")
+    private String city;
+
+    @NotNull(message = "Check-in date cannot be null")
+    @FutureOrPresent(message = "Check-in date cannot be in the past")
+    private LocalDate checkinDate;
+
+    @NotNull(message = "Check-out date cannot be null")
+    //@DateIsAfterAnotherDate(fieldName = "checkinDate", message = "Check-out date must be after check-in date")
+    private LocalDate checkoutDate;
+}

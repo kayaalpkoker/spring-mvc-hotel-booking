@@ -166,7 +166,8 @@ public class HotelServiceImpl implements HotelService {
                 .build();
     }
 
-    private HotelDTO mapHotelToHotelDto(Hotel hotel) {
+    @Override
+    public HotelDTO mapHotelToHotelDto(Hotel hotel) {
         List<RoomDTO> roomDTOs = hotel.getRooms().stream()
                 .map(roomService::mapRoomToRoomDto)  // convert each Room to RoomDTO
                 .collect(Collectors.toList());  // collect results to a list

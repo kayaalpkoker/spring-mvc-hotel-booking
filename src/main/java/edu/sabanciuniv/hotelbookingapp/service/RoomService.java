@@ -5,6 +5,7 @@ import edu.sabanciuniv.hotelbookingapp.model.Room;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RoomService {
 
@@ -12,7 +13,7 @@ public interface RoomService {
 
     List<Room> saveRooms(List<RoomDTO> roomDTOs, Hotel hotel);
 
-    Room findRoomById(Long id);
+    Optional<Room> findRoomById(Long id);
 
     List<Room> findRoomsByHotelId(Long hotelId);
 

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,8 +41,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room findRoomById(Long id) {
-        return null;
+    public Optional<Room> findRoomById(Long id) {
+        return roomRepository.findById(id);
     }
 
     @Override

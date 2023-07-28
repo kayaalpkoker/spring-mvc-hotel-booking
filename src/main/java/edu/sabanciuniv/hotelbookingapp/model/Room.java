@@ -21,7 +21,8 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
 
+    private int roomCount;
+
     private double pricePerNight;
 
-    private int roomCount;
 }
