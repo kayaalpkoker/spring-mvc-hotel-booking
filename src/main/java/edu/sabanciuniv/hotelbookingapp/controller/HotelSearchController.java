@@ -26,29 +26,29 @@ public class HotelSearchController {
 
     @GetMapping("/search")
     public String showSearchForm(@ModelAttribute("hotelSearchDTO") HotelSearchDTO hotelSearchDTO) {
-        return "search/search";
+        return "hotelsearch/search";
     }
 
     @PostMapping("/search")
     public String findAvailableHotelsByCityAndDate(@Valid @ModelAttribute("hotelSearchDTO") HotelSearchDTO hotelSearchDTO, BindingResult result, RedirectAttributes redirectAttributes, Model model) {
         if (result.hasErrors()) {
-            return "search/search";
+            return "hotelsearch/search";
         }
         try {
             validateDates(hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
         } catch (IllegalArgumentException e) {
-            result.rejectValue("checkinDate", "dates.invalid", e.getMessage());
-            return "search/search";
+            result.rejectValue("checkoutDate", null, e.getMessage());
+            return "hotelsearch/search";
         }
         try {
             log.info("Searching for hotels in the city {} between dates {} and {}", hotelSearchDTO.getCity(), hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
-            List<HotelAvailabilityDTO> hotelDTOs = hotelSearchService.findAvailableHotelsByCityAndDate(hotelSearchDTO.getCity(), hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
-            model.addAttribute("hotels", hotelDTOs);
-            return "search-results";
+            List<HotelAvailabilityDTO> hotelAvailabilityDTOS = hotelSearchService.findAvailableHotelsByCityAndDate(hotelSearchDTO.getCity(), hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
+            model.addAttribute("hotels", hotelAvailabilityDTOS);
+            return "hotelsearch/search-results";
         } catch (Exception e) {
             log.error("An error occurred while searching for hotels", e);
             model.addAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
-            return "search/search";
+            return "hotelsearch/search";
         }
     }
 

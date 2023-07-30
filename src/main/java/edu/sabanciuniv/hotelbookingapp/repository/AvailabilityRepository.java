@@ -12,7 +12,9 @@ import java.util.Optional;
 @Repository
 public interface AvailabilityRepository extends JpaRepository<Availability, Long> {
 
+    // Find max amount of available rooms for the least available day throughout the booking range
     @Query("SELECT MIN(a.availableRooms) FROM Availability a WHERE a.room.id = :roomId AND a.date BETWEEN :checkinDate AND :checkoutDate")
-    Optional<Integer> getMinAvailableRooms(@Param("roomId") Long roomId, @Param("checkinDate") LocalDate checkinDate, @Param("checkoutDate") LocalDate checkoutDate);
+    Optional<Integer> getMaxAvailableRooms(@Param("roomId") Long roomId, @Param("checkinDate") LocalDate checkinDate, @Param("checkoutDate") LocalDate checkoutDate);
+
 
 }

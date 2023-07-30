@@ -20,10 +20,10 @@ public class AvailabilityServiceImpl implements AvailabilityService {
     private final RoomService roomService;
 
     @Override
-    public Integer getMinAvailableRooms(Long roomId, LocalDate checkinDate, LocalDate checkoutDate) {
+    public Integer getMaxAvailableRooms(Long roomId, LocalDate checkinDate, LocalDate checkoutDate) {
         Room room = roomService.findRoomById(roomId).orElseThrow(() -> new EntityNotFoundException("Room not found"));
 
-        return availabilityRepository.getMinAvailableRooms(roomId, checkinDate, checkoutDate)
+        return availabilityRepository.getMaxAvailableRooms(roomId, checkinDate, checkoutDate)
                 .orElse(room.getRoomCount()); // Consider no record as full availability
     }
 }

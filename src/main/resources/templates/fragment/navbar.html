@@ -16,7 +16,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto py-2 text-end">
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/register/manager}">List your property</a>
                 </li>
@@ -32,7 +32,7 @@
                 </li>
                 <!-- Customer links -->
                 <li class="nav-item" sec:authorize="hasRole('ROLE_CUSTOMER')">
-                    <a class="nav-link" th:href="@{/customer/dashboard}">Dashboard</a>
+                    <a class="nav-link" th:href="@{/search}">Search Hotels</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ROLE_CUSTOMER')">
                     <a class="nav-link" th:href="@{/customer/account}">My Account</a>
@@ -46,9 +46,12 @@
                 </li>
                 <!-- Logout -->
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <form class="form-inline mt-2 mt-md-0" method="post" th:action="@{/logout}">
-                        <button class="btn btn-link my-2 my-sm-0" type="submit">Logout</button>
-                    </form>
+                    <div class="d-flex justify-content-end">
+                        <form class="form-inline" method="post" th:action="@{/logout}">
+                            <button class="btn btn-link nav-link" type="submit" style="text-decoration: none;">Logout
+                            </button>
+                        </form>
+                    </div>
                 </li>
             </ul>
         </div>

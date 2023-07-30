@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 @Component
@@ -25,6 +26,7 @@ public class TestDataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final AddressRepository addressRepository;
     private final HotelRepository hotelRepository;
+    private final AvailabilityRepository availabilityRepository;
 
     @Override
     @Transactional
@@ -126,7 +128,17 @@ public class TestDataInitializer implements CommandLineRunner {
 
                 hotelRepository.save(hotel1);
                 hotelRepository.save(hotel2);
-                log.info("Hotel test data persisted");
+                log.info("Hotel data persisted");
+
+                /*
+                Availability availability1 = Availability.builder().hotel(hotel2).date(LocalDate.of(2023,8,1)).room(singleRoom2).availableRooms(5).build();
+                Availability availability2 = Availability.builder().hotel(hotel2).date(LocalDate.of(2023,8,2)).room(doubleRoom2).availableRooms(7).build();
+                availabilityRepository.save(availability1);
+                availabilityRepository.save(availability2);
+                log.info("Availability data persisted");
+
+                 */
+
             } else {
                 log.info("Test data persistence is not required");
             }

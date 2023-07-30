@@ -4,6 +4,6 @@ import java.time.LocalDate;
 
 public interface AvailabilityService {
 
-    Integer getMinAvailableRooms(Long roomId, LocalDate checkinDate, LocalDate checkoutDate);
+    Integer getMaxAvailableRooms(Long roomId, LocalDate checkinDate, LocalDate checkoutDate);
 
 }

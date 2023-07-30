@@ -13,15 +13,17 @@ import java.util.Optional;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    Optional<Hotel> findByName(String name);
-
-    List<Hotel> findAllByHotelManager_Id(Long id);
-
-    Optional<Hotel> findByIdAndHotelManager_Id(Long id, Long managerId);
-
     @Query("SELECT h FROM Hotel h WHERE h.address.city = :city")
     List<Hotel> findByCity(@Param("city") String city);
 
+    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND h IN (" +
+            "SELECT r.hotel FROM Room r WHERE " +
+            "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms > 0) >= :days" +
+            " OR " +
+            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r) = 0)")
+    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
+
+    /*
     // A more adaptive query for various SQL dialects
     @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND NOT EXISTS (" +
             "SELECT 1 FROM Room r WHERE r.hotel = h AND (" +
@@ -29,6 +31,8 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate) < :days" +
             "))")
     List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
+     */
+
 
     /*
     // This query relies on the FUNCTION('DATEDIFF', :checkoutDate, :checkinDate) construct,
@@ -40,4 +44,12 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
             "))")
     List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate);
      */
+
+    Optional<Hotel> findByName(String name);
+
+    List<Hotel> findAllByHotelManager_Id(Long id);
+
+    Optional<Hotel> findByIdAndHotelManager_Id(Long id, Long managerId);
+
+
 }

@@ -53,14 +53,14 @@ public class HotelSearchServiceImpl implements HotelSearchService {
         // For each room type, find the minimum available rooms across the date range
         int maxAvailableSingleRooms = hotel.getRooms().stream()
                 .filter(room -> room.getRoomType() == RoomType.SINGLE)
-                .mapToInt(room -> availabilityService.getMinAvailableRooms(room.getId(), checkinDate, checkoutDate))
+                .mapToInt(room -> availabilityService.getMaxAvailableRooms(room.getId(), checkinDate, checkoutDate))
                 .max()
                 .orElse(0); // Assume no single rooms if none match the filter
         hotelAvailabilityDTO.setMaxAvailableSingleRooms(maxAvailableSingleRooms);
 
         int maxAvailableDoubleRooms = hotel.getRooms().stream()
                 .filter(room -> room.getRoomType() == RoomType.DOUBLE)
-                .mapToInt(room -> availabilityService.getMinAvailableRooms(room.getId(), checkinDate, checkoutDate))
+                .mapToInt(room -> availabilityService.getMaxAvailableRooms(room.getId(), checkinDate, checkoutDate))
                 .max()
                 .orElse(0); // Assume no double rooms if none match the filter
         hotelAvailabilityDTO.setMaxAvailableDoubleRooms(maxAvailableDoubleRooms);

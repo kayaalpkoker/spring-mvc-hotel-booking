@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Search results for "<span th:text="${hotelSearchDTO.getCity()}">City</span>"</h2>
+                <h5>Check-in: <span th:text="${hotelSearchDTO.getCheckinDate()}"></span></h5>
+                <h5>Check-out: <span th:text="${hotelSearchDTO.getCheckoutDate()}"></span></h5>
+                <div th:each="hotel : ${hotels}">
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${hotel.name}">Hotel Name</h5>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card-body">
+                                    <p class="card-text">Available single rooms: <span th:text="${hotel.maxAvailableSingleRooms}">0</span></p>
+                                    <p class="card-text">Available double rooms: <span th:text="${hotel.maxAvailableDoubleRooms}">0</span></p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-center">
+                                <a th:href="@{/hotel-details/{id}(id=${hotel.id})}" class="btn btn-primary w-100">Book now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
