@@ -130,14 +130,14 @@ public class TestDataInitializer implements CommandLineRunner {
                 hotelRepository.save(hotel2);
                 log.info("Hotel data persisted");
 
-                /*
+
                 Availability availability1 = Availability.builder().hotel(hotel2).date(LocalDate.of(2023,8,1)).room(singleRoom2).availableRooms(5).build();
-                Availability availability2 = Availability.builder().hotel(hotel2).date(LocalDate.of(2023,8,2)).room(doubleRoom2).availableRooms(7).build();
+                Availability availability2 = Availability.builder().hotel(hotel2).date(LocalDate.of(2023,8,1)).room(doubleRoom2).availableRooms(7).build();
                 availabilityRepository.save(availability1);
                 availabilityRepository.save(availability2);
                 log.info("Availability data persisted");
 
-                 */
+
 
             } else {
                 log.info("Test data persistence is not required");

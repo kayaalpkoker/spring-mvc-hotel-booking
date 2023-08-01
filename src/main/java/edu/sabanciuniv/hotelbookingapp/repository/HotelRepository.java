@@ -13,15 +13,34 @@ import java.util.Optional;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city")
-    List<Hotel> findByCity(@Param("city") String city);
+    @Query("SELECT h FROM Hotel h JOIN h.rooms r WHERE h.address.city = :city AND (" +
+            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate) = 0 OR " +
+            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms > 0) >= :days)")
+    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
 
+    /*
+    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND h IN (" +
+            "SELECT r.hotel FROM Room r WHERE " +
+            "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms > 0) >= :days" +
+            " OR " +
+            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate) = 0)")
+    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
+
+     */
+
+
+    /*
     @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND h IN (" +
             "SELECT r.hotel FROM Room r WHERE " +
             "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms > 0) >= :days" +
             " OR " +
             "(SELECT COUNT(a) FROM Availability a WHERE a.room = r) = 0)")
     List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
+
+     */
+
+    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city")
+    List<Hotel> findHotelsByCity(@Param("city") String city);
 
     /*
     // A more adaptive query for various SQL dialects

@@ -22,6 +22,5 @@ public class HotelSearchDTO {
     private LocalDate checkinDate;
 
     @NotNull(message = "Check-out date cannot be null")
-    //@DateIsAfterAnotherDate(fieldName = "checkinDate", message = "Check-out date must be after check-in date")
     private LocalDate checkoutDate;
 }

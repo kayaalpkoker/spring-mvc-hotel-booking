@@ -9,21 +9,64 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h2>Search results for "<span th:text="${hotelSearchDTO.getCity()}">City</span>"</h2>
-                <h5>Check-in: <span th:text="${hotelSearchDTO.getCheckinDate()}"></span></h5>
-                <h5>Check-out: <span th:text="${hotelSearchDTO.getCheckoutDate()}"></span></h5>
+                <div class="mb-5">
+                    <h2>Search results for "<span th:text="${hotelSearchDTO.getCity()}">City</span>"</h2>
+                    <div class="row">
+                        <div class="col-3">
+                            <h5>Check-in:</h5>
+                        </div>
+                        <div class="col-9">
+                            <h5><span th:text="${hotelSearchDTO.getCheckinDate()}"></span></h5>
+                        </div>
+                        <div class="col-3">
+                            <h5>Check-out:</h5>
+                        </div>
+                        <div class="col-9">
+                            <h5><span th:text="${hotelSearchDTO.getCheckoutDate()}"></span></h5>
+                        </div>
+                    </div>
+                </div>
                 <div th:each="hotel : ${hotels}">
                     <div class="card mb-3">
                         <div class="row g-0">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="card-body">
-                                    <h5 class="card-title" th:text="${hotel.name}">Hotel Name</h5>
+                                    <h5 class="card-title fw-bold" th:text="${hotel.name}">Hotel Name</h5>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row g-0">
                             <div class="col-md-4">
+                                <!-- Image placeholder -->
+                            </div>
+                            <div class="col-md-6">
                                 <div class="card-body">
-                                    <p class="card-text">Available single rooms: <span th:text="${hotel.maxAvailableSingleRooms}">0</span></p>
-                                    <p class="card-text">Available double rooms: <span th:text="${hotel.maxAvailableDoubleRooms}">0</span></p>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p class="card-text fw-bold">Available Rooms</p>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <p class="card-text">Single:</p>
+                                                    <p class="card-text">Double:</p>
+                                                </div>
+                                                <div class="col-6">
+                                                    <p class="card-text"><span th:text="${hotel.maxAvailableSingleRooms}">0</span></p>
+                                                    <p class="card-text"><span th:text="${hotel.maxAvailableDoubleRooms}">0</span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <p class="card-text fw-bold">Price per Night</p>
+                                            <th:block th:each="room : ${hotel.roomDTOs}">
+                                                <p class="card-text" th:if="${room.roomType.name() == 'SINGLE'}">
+                                                    $ <span th:text="${room.pricePerNight}"></span>
+                                                </p>
+                                                <p class="card-text" th:if="${room.roomType.name() == 'DOUBLE'}">
+                                                    $ <span th:text="${room.pricePerNight}"></span>
+                                                </p>
+                                            </th:block>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-2 d-flex align-items-center">
