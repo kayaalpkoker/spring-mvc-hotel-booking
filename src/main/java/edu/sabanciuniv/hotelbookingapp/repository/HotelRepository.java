@@ -13,62 +13,55 @@ import java.util.Optional;
 @Repository
 public interface HotelRepository extends JpaRepository<Hotel, Long> {
 
-    @Query("SELECT h FROM Hotel h JOIN h.rooms r WHERE h.address.city = :city AND (" +
-            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate) = 0 OR " +
-            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms > 0) >= :days)")
-    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
-
-    /*
-    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND h IN (" +
-            "SELECT r.hotel FROM Room r WHERE " +
-            "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms > 0) >= :days" +
-            " OR " +
-            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate) = 0)")
-    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
-
-     */
-
-
-    /*
-    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND h IN (" +
-            "SELECT r.hotel FROM Room r WHERE " +
-            "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms > 0) >= :days" +
-            " OR " +
-            "(SELECT COUNT(a) FROM Availability a WHERE a.room = r) = 0)")
-    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
-
-     */
-
-    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city")
-    List<Hotel> findHotelsByCity(@Param("city") String city);
-
-    /*
-    // A more adaptive query for various SQL dialects
-    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND NOT EXISTS (" +
-            "SELECT 1 FROM Room r WHERE r.hotel = h AND (" +
-            "EXISTS (SELECT 1 FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms = 0) OR " +
-            "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate) < :days" +
-            "))")
-    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate, long days);
-     */
-
-
-    /*
-    // This query relies on the FUNCTION('DATEDIFF', :checkoutDate, :checkinDate) construct,
-    // which is not universally supported. Supported for MySQL
-    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city AND NOT EXISTS (" +
-            "SELECT 1 FROM Room r WHERE r.hotel = h AND (" +
-            "EXISTS (SELECT 1 FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate AND a.availableRooms = 0) OR " +
-            "(SELECT COUNT(*) FROM Availability a WHERE a.room = r AND a.date BETWEEN :checkinDate AND :checkoutDate) < FUNCTION('DATEDIFF', :checkoutDate, :checkinDate) + 1" +
-            "))")
-    List<Hotel> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate);
-     */
-
     Optional<Hotel> findByName(String name);
 
     List<Hotel> findAllByHotelManager_Id(Long id);
 
     Optional<Hotel> findByIdAndHotelManager_Id(Long id, Long managerId);
 
+    @Query("SELECT h FROM Hotel h WHERE h.address.city = :city")
+    List<Hotel> findHotelsByCity(@Param("city") String city);
+
+    @Query("SELECT h " +
+            "FROM Hotel h " +
+            "JOIN h.rooms r " +
+            "LEFT JOIN Availability a ON a.room.id = r.id " +
+            "AND a.date >= :checkinDate AND a.date < :checkoutDate " +
+            "WHERE h.address.city = :city " +
+            "AND (a IS NULL OR a.availableRooms > 0) " +
+            "GROUP BY h.id, r.id " +
+            "HAVING COUNT(DISTINCT a.date) + SUM(CASE WHEN a IS NULL THEN 1 ELSE 0 END) = :numberOfDays")
+    List<Hotel> findHotelsWithAvailableRooms(@Param("city") String city,
+                                             @Param("checkinDate") LocalDate checkinDate,
+                                             @Param("checkoutDate") LocalDate checkoutDate,
+                                             @Param("numberOfDays") Long numberOfDays);
+
+    @Query("SELECT h " +
+            "FROM Hotel h " +
+            "WHERE h.address.city = :city " +
+            "AND NOT EXISTS (" +
+            "   SELECT 1 " +
+            "   FROM Availability a " +
+            "   WHERE a.room.hotel.id = h.id " +
+            "   AND a.date >= :checkinDate AND a.date < :checkoutDate" +
+            ")")
+    List<Hotel> findHotelsWithoutAvailabilityRecords(@Param("city") String city,
+                                                     @Param("checkinDate") LocalDate checkinDate,
+                                                     @Param("checkoutDate") LocalDate checkoutDate);
+
+    @Query("SELECT h " +
+            "FROM Hotel h " +
+            "JOIN h.rooms r " +
+            "LEFT JOIN Availability a ON r.id = a.room.id " +
+            "AND a.date >= :checkinDate AND a.date < :checkoutDate " +
+            "WHERE h.address.city = :city " +
+            "AND (a IS NULL OR a.availableRooms > 0) " +
+            "GROUP BY h.id " +
+            "HAVING COUNT(DISTINCT a.date) < :numberOfDays " +
+            "AND COUNT(DISTINCT CASE WHEN a.availableRooms > 0 THEN a.date END) > 0")
+    List<Hotel> findHotelsWithPartialAvailabilityRecords(@Param("city") String city,
+                                                         @Param("checkinDate") LocalDate checkinDate,
+                                                         @Param("checkoutDate") LocalDate checkoutDate,
+                                                         @Param("numberOfDays") Long numberOfDays);
 
 }

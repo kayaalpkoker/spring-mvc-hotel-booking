@@ -68,76 +68,94 @@ public class TestDataInitializer implements CommandLineRunner {
                 hotelManagerRepository.save(hm2);
                 log.info("User data persisted");
 
-                Address address1 = Address.builder()
-                        .addressLine("Visnezade, Acisu Sokagi No:19")
-                        .city("Istanbul")
-                        .country("Turkey")
-                        .build();
+                Address addressIst1 = Address.builder().addressLine("Visnezade Mah Acisu Sokagi No:19 Macka").city("Istanbul")
+                        .country("Turkey").build();
+                Address addressIst2 = Address.builder().addressLine("Ciragan Cad. No:28").city("Istanbul")
+                        .country("Turkey").build();
+                Address addressIst3 = Address.builder().addressLine("Ciragan Cad. No:32").city("Istanbul")
+                        .country("Turkey").build();
 
-                Address address2 = Address.builder()
-                        .addressLine("Unter den Linden 77")
-                        .city("Berlin")
-                        .country("Germany")
-                        .build();
+                Address addressBerlin1 = Address.builder().addressLine("Unter den Linden 77").city("Berlin")
+                        .country("Germany").build();
+                Address addressBerlin2 = Address.builder().addressLine("Potsdamer Platz 3, Mitte, 10785").city("Berlin")
+                        .country("Germany").build();
+                Address addressBerlin3 = Address.builder().addressLine("Budapester Str. 2, Mitte, 10787").city("Berlin")
+                        .country("Germany").build();
 
-                addressRepository.save(address1);
-                addressRepository.save(address2);
+                addressRepository.save(addressIst1);
+                addressRepository.save(addressIst2);
+                addressRepository.save(addressIst3);
+                addressRepository.save(addressBerlin1);
+                addressRepository.save(addressBerlin2);
+                addressRepository.save(addressBerlin3);
 
-                Hotel hotel1 = Hotel.builder()
-                        .name("Swissotel The Bosphorus Istanbul")
-                        .address(address1)
-                        .hotelManager(hm1)
-                        .build();
+                Hotel hotelIst1 = Hotel.builder().name("Swissotel The Bosphorus Istanbul")
+                        .address(addressIst1).hotelManager(hm1).build();
+                Hotel hotelIst2 = Hotel.builder().name("Four Seasons Hotel Istanbul")
+                        .address(addressIst2).hotelManager(hm1).build();
+                Hotel hotelIst3 = Hotel.builder().name("Ciragan Palace Kempinski Istanbul")
+                        .address(addressIst3).hotelManager(hm1).build();
 
-                Hotel hotel2 = Hotel.builder()
-                        .name("Hotel Adlon Kempinski Berlin")
-                        .address(address2)
-                        .hotelManager(hm2)
-                        .build();
+                Hotel hotelBerlin1 = Hotel.builder().name("Hotel Adlon Kempinski Berlin")
+                        .address(addressBerlin1).hotelManager(hm2).build();
+                Hotel hotelBerlin2 = Hotel.builder().name("The Ritz-Carlton Berlin")
+                        .address(addressBerlin2).hotelManager(hm2).build();
+                Hotel hotelBerlin3 = Hotel.builder().name("InterContinental Berlin")
+                        .address(addressBerlin3).hotelManager(hm2).build();
 
-                Room singleRoom1 = Room.builder()
-                        .roomType(RoomType.SINGLE)
-                        .pricePerNight(100.0)
-                        .roomCount(20)
-                        .hotel(hotel1)
-                        .build();
+                Room singleRoomIst1 = Room.builder().roomType(RoomType.SINGLE)
+                        .pricePerNight(370).roomCount(35).hotel(hotelIst1).build();
+                Room doubleRoomIst1 = Room.builder().roomType(RoomType.DOUBLE)
+                        .pricePerNight(459).roomCount(45).hotel(hotelIst1).build();
 
-                Room doubleRoom1 = Room.builder()
-                        .roomType(RoomType.DOUBLE)
-                        .pricePerNight(200.0)
-                        .roomCount(10)
-                        .hotel(hotel1)
-                        .build();
+                Room singleRoomIst2 = Room.builder().roomType(RoomType.SINGLE)
+                        .pricePerNight(700).roomCount(25).hotel(hotelIst2).build();
+                Room doubleRoomIst2 = Room.builder().roomType(RoomType.DOUBLE)
+                        .pricePerNight(890).roomCount(30).hotel(hotelIst2).build();
 
-                Room singleRoom2 = Room.builder()
-                        .roomType(RoomType.SINGLE)
-                        .pricePerNight(120.0)
-                        .roomCount(25)
-                        .hotel(hotel2)
-                        .build();
+                Room singleRoomIst3 = Room.builder().roomType(RoomType.SINGLE)
+                        .pricePerNight(691).roomCount(30).hotel(hotelIst3).build();
+                Room doubleRoomIst3 = Room.builder().roomType(RoomType.DOUBLE)
+                        .pricePerNight(800).roomCount(75).hotel(hotelIst3).build();
 
-                Room doubleRoom2 = Room.builder()
-                        .roomType(RoomType.DOUBLE)
-                        .pricePerNight(250.0)
-                        .roomCount(15)
-                        .hotel(hotel2)
-                        .build();
+                Room singleRoomBerlin1 = Room.builder().roomType(RoomType.SINGLE)
+                        .pricePerNight(120.0).roomCount(25).hotel(hotelBerlin1).build();
+                Room doubleRoomBerlin1 = Room.builder().roomType(RoomType.DOUBLE)
+                        .pricePerNight(250.0).roomCount(15).hotel(hotelBerlin1).build();
 
-                hotel1.getRooms().addAll(Arrays.asList(singleRoom1,doubleRoom1));
-                hotel2.getRooms().addAll(Arrays.asList(singleRoom2,doubleRoom2));
+                Room singleRoomBerlin2 = Room.builder().roomType(RoomType.SINGLE)
+                        .pricePerNight(300).roomCount(50).hotel(hotelBerlin2).build();
+                Room doubleRoomBerlin2 = Room.builder().roomType(RoomType.DOUBLE)
+                        .pricePerNight(400).roomCount(50).hotel(hotelBerlin2).build();
 
-                hotelRepository.save(hotel1);
-                hotelRepository.save(hotel2);
+                Room singleRoomBerlin3 = Room.builder().roomType(RoomType.SINGLE)
+                        .pricePerNight(179).roomCount(45).hotel(hotelBerlin3).build();
+                Room doubleRoomBerlin3 = Room.builder().roomType(RoomType.DOUBLE)
+                        .pricePerNight(256).roomCount(25).hotel(hotelBerlin3).build();
+
+                hotelIst1.getRooms().addAll(Arrays.asList(singleRoomIst1,doubleRoomIst1));
+                hotelIst2.getRooms().addAll(Arrays.asList(singleRoomIst2,doubleRoomIst2));
+                hotelIst3.getRooms().addAll(Arrays.asList(singleRoomIst3,doubleRoomIst3));
+                hotelBerlin1.getRooms().addAll(Arrays.asList(singleRoomBerlin1,doubleRoomBerlin1));
+                hotelBerlin2.getRooms().addAll(Arrays.asList(singleRoomBerlin2,doubleRoomBerlin2));
+                hotelBerlin3.getRooms().addAll(Arrays.asList(singleRoomBerlin3,doubleRoomBerlin3));
+
+                hotelRepository.save(hotelIst1);
+                hotelRepository.save(hotelIst2);
+                hotelRepository.save(hotelIst3);
+                hotelRepository.save(hotelBerlin1);
+                hotelRepository.save(hotelBerlin2);
+                hotelRepository.save(hotelBerlin3);
                 log.info("Hotel data persisted");
 
+                Availability av1Berlin1 = Availability.builder().hotel(hotelBerlin1)
+                        .date(LocalDate.of(2023,9,1)).room(singleRoomBerlin1).availableRooms(5).build();
+                Availability av2Berlin1 = Availability.builder().hotel(hotelBerlin1)
+                        .date(LocalDate.of(2023,9,2)).room(doubleRoomBerlin1).availableRooms(7).build();
 
-                Availability availability1 = Availability.builder().hotel(hotel2).date(LocalDate.of(2023,8,1)).room(singleRoom2).availableRooms(5).build();
-                Availability availability2 = Availability.builder().hotel(hotel2).date(LocalDate.of(2023,8,1)).room(doubleRoom2).availableRooms(7).build();
-                availabilityRepository.save(availability1);
-                availabilityRepository.save(availability2);
+                availabilityRepository.save(av1Berlin1);
+                availabilityRepository.save(av2Berlin1);
                 log.info("Availability data persisted");
-
-
 
             } else {
                 log.info("Test data persistence is not required");

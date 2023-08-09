@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Controller
@@ -35,7 +36,7 @@ public class HotelSearchController {
             return "hotelsearch/search";
         }
         try {
-            validateDates(hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
+            validateCheckinAndCheckoutDates(hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
         } catch (IllegalArgumentException e) {
             result.rejectValue("checkoutDate", null, e.getMessage());
             return "hotelsearch/search";
@@ -44,6 +45,10 @@ public class HotelSearchController {
             log.info("Searching for hotels in the city {} between dates {} and {}", hotelSearchDTO.getCity(), hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
             List<HotelAvailabilityDTO> hotelAvailabilityDTOS = hotelSearchService.findAvailableHotelsByCityAndDate(hotelSearchDTO.getCity(), hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
             model.addAttribute("hotels", hotelAvailabilityDTOS);
+
+            long days = ChronoUnit.DAYS.between(hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
+            model.addAttribute("days", days);
+
             return "hotelsearch/search-results";
         } catch (Exception e) {
             log.error("An error occurred while searching for hotels", e);
@@ -52,7 +57,7 @@ public class HotelSearchController {
         }
     }
 
-    private void validateDates(LocalDate checkinDate, LocalDate checkoutDate) {
+    private void validateCheckinAndCheckoutDates(LocalDate checkinDate, LocalDate checkoutDate) {
         if (checkinDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Check-in date cannot be in the past");
         }

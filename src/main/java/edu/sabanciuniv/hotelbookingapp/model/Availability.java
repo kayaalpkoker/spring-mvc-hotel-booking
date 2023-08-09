@@ -17,6 +17,10 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    // CONSIDER DELETING (A relation to Room already exists, which links to hotel)
+    // TODO: 9.08.2023
+
     // Unidirectional relationship due to business logic and performance considerations.
     // Logic: Querying Availability based on specific dates, rather than getting all Availability entities for a Hotel
     @ManyToOne

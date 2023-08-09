@@ -11,20 +11,22 @@
             <div class="col-md-12">
                 <div class="mb-5">
                     <h2>Search results for "<span th:text="${hotelSearchDTO.getCity()}">City</span>"</h2>
-                    <div class="row">
-                        <div class="col-3">
-                            <h5>Check-in:</h5>
-                        </div>
-                        <div class="col-9">
-                            <h5><span th:text="${hotelSearchDTO.getCheckinDate()}"></span></h5>
-                        </div>
-                        <div class="col-3">
-                            <h5>Check-out:</h5>
-                        </div>
-                        <div class="col-9">
-                            <h5><span th:text="${hotelSearchDTO.getCheckoutDate()}"></span></h5>
-                        </div>
-                    </div>
+                    <table class="table border-0">
+                        <tbody>
+                        <tr>
+                            <td class="border-0 text-nowrap py-0" style="width:20%"><h5>Duration:</h5></td>
+                            <td class="border-0 py-0"><h5><span th:text="${days}">0</span> days</h5></td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 text-nowrap py-0" style="width:20%"><h5>Check-in:</h5></td>
+                            <td class="border-0 py-0"><h5><span th:text="${hotelSearchDTO.getCheckinDate()}"></span></h5></td>
+                        </tr>
+                        <tr>
+                            <td class="border-0 text-nowrap py-0" style="width:20%"><h5>Check-out:</h5></td>
+                            <td class="border-0 py-0"><h5><span th:text="${hotelSearchDTO.getCheckoutDate()}"></span></h5></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div th:each="hotel : ${hotels}">
                     <div class="card mb-3">
@@ -50,8 +52,10 @@
                                                     <p class="card-text">Double:</p>
                                                 </div>
                                                 <div class="col-6">
-                                                    <p class="card-text"><span th:text="${hotel.maxAvailableSingleRooms}">0</span></p>
-                                                    <p class="card-text"><span th:text="${hotel.maxAvailableDoubleRooms}">0</span></p>
+                                                    <p class="card-text"><span
+                                                            th:text="${hotel.maxAvailableSingleRooms}">0</span></p>
+                                                    <p class="card-text"><span
+                                                            th:text="${hotel.maxAvailableDoubleRooms}">0</span></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -70,7 +74,8 @@
                                 </div>
                             </div>
                             <div class="col-md-2 d-flex align-items-center">
-                                <a th:href="@{/hotel-details/{id}(id=${hotel.id})}" class="btn btn-primary w-100">Book now</a>
+                                <a th:href="@{/hotel-details/{id}(id=${hotel.id})}" class="btn btn-primary w-100 my-2 mx-3">Book
+                                    now</a>
                             </div>
                         </div>
                     </div>

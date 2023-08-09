@@ -1,13 +1,10 @@
 package edu.sabanciuniv.hotelbookingapp.service.impl;
 
-import edu.sabanciuniv.hotelbookingapp.model.Availability;
 import edu.sabanciuniv.hotelbookingapp.model.Hotel;
-import edu.sabanciuniv.hotelbookingapp.model.Room;
 import edu.sabanciuniv.hotelbookingapp.model.RoomType;
 import edu.sabanciuniv.hotelbookingapp.model.dto.AddressDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelAvailabilityDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
-import edu.sabanciuniv.hotelbookingapp.repository.AvailabilityRepository;
 import edu.sabanciuniv.hotelbookingapp.repository.HotelRepository;
 import edu.sabanciuniv.hotelbookingapp.service.*;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,53 +28,35 @@ public class HotelSearchServiceImpl implements HotelSearchService {
     private final RoomService roomService;
     private final AvailabilityService availabilityService;
 
-    // Service must do it!
-    private final AvailabilityRepository availabilityRepository;
-
-    /*
-    // Old one
-
     @Override
     public List<HotelAvailabilityDTO> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate) {
-        long days = ChronoUnit.DAYS.between(checkinDate, checkoutDate) + 1;
         log.info("Attempting to find hotels in {} with available rooms from {} to {}", city, checkinDate, checkoutDate);
-        List<Hotel> hotels = hotelRepository.findAvailableHotelsByCityAndDate(city, checkinDate, checkoutDate, days);
-        log.info("Successfully found {} hotels with available rooms", hotels.size());
-        return hotels.stream().map(hotel -> mapHotelToHotelAvailabilityDto(hotel, checkinDate, checkoutDate)).collect(Collectors.toList());
+
+        // Calculate the number of days between check-in and check-out
+        Long numberOfDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+
+        // 1. Fetch hotels that satisfy the criteria
+        List<Hotel> hotelsWithAvailableRooms = hotelRepository.findHotelsWithAvailableRooms(city, checkinDate, checkoutDate, numberOfDays);
+
+        // 2. Fetch hotels that don't have any availability records for the entire booking range
+        List<Hotel> hotelsWithoutAvailabilityRecords = hotelRepository.findHotelsWithoutAvailabilityRecords(city, checkinDate, checkoutDate);
+
+        // 3. Fetch hotels with partial availability; some days with records meeting the criteria and some days without any records
+        List<Hotel> hotelsWithPartialAvailabilityRecords = hotelRepository.findHotelsWithPartialAvailabilityRecords(city, checkinDate, checkoutDate, numberOfDays);
+
+        // Combine and deduplicate the hotels using a Set
+        Set<Hotel> combinedHotels = new HashSet<>(hotelsWithAvailableRooms);
+        combinedHotels.addAll(hotelsWithoutAvailabilityRecords);
+        combinedHotels.addAll(hotelsWithPartialAvailabilityRecords);
+
+        log.info("Successfully found {} hotels with available rooms", combinedHotels.size());
+
+        // Convert the combined hotel list to DTOs for the response
+        return combinedHotels.stream()
+                .map(hotel -> mapHotelToHotelAvailabilityDto(hotel, checkinDate, checkoutDate))
+                .collect(Collectors.toList());
     }
-     */
 
-    public List<HotelAvailabilityDTO> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate) {
-        List<Hotel> hotels = hotelRepository.findHotelsByCity(city);
-        List<HotelAvailabilityDTO> availableHotels = new ArrayList<>();
-
-        for (Hotel hotel : hotels) {
-            boolean isAvailable = true;
-            for (Room room : hotel.getRooms()) {
-                List<Availability> availabilities = availabilityRepository.findByRoom_IdAndDateBetween(room.getId(), checkinDate, checkoutDate);
-
-                // If there's no availability entry for a room, it means it's fully available
-                if (availabilities.isEmpty()) continue;
-
-                // If there are availability entries, check if there's enough rooms for each day
-                for (Availability availability : availabilities) {
-                    if (availability.getAvailableRooms() < 1) {
-                        isAvailable = false;
-                        break;
-                    }
-                }
-
-                // If a room is not available, the hotel is not available
-                if (!isAvailable) break;
-            }
-
-            // If all rooms of the hotel are available, add it to the result list
-            if (isAvailable) {
-                availableHotels.add(mapHotelToHotelAvailabilityDto(hotel, checkinDate, checkoutDate));
-            }
-        }
-        return availableHotels;
-    }
 
     @Override
     public HotelAvailabilityDTO mapHotelToHotelAvailabilityDto(Hotel hotel, LocalDate checkinDate, LocalDate checkoutDate) {
@@ -111,3 +92,27 @@ public class HotelSearchServiceImpl implements HotelSearchService {
     }
 
 }
+
+/*
+    public List<HotelAvailabilityDTO> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate) {
+        List<Hotel> hotels = hotelRepository.findHotelsByCity(city);
+        List<HotelAvailabilityDTO> availableHotels = new ArrayList<>();
+
+        for (Hotel hotel : hotels) {
+            boolean isAnyRoomAvailable = false;
+
+            for (Room room : hotel.getRooms()) {
+                if (availabilityService.isRoomAvailable(room.getId(), checkinDate, checkoutDate)) {
+                    isAnyRoomAvailable = true;
+                    break;  // Break once a room type is found available for the entire range.
+                }
+            }
+
+            // If at least one room type is available throughout the entire booking range, add the hotel to the result list
+            if (isAnyRoomAvailable) {
+                availableHotels.add(mapHotelToHotelAvailabilityDto(hotel, checkinDate, checkoutDate));
+            }
+        }
+        return availableHotels;
+    }
+     */

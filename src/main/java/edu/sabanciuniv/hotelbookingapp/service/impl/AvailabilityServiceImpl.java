@@ -21,9 +21,13 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     @Override
     public Integer getMinAvailableRooms(Long roomId, LocalDate checkinDate, LocalDate checkoutDate) {
+        log.info("Fetching minimum available rooms for room ID {} from {} to {}", roomId, checkinDate, checkoutDate);
+
         Room room = roomService.findRoomById(roomId).orElseThrow(() -> new EntityNotFoundException("Room not found"));
 
+        // Fetch the minimum available rooms throughout the booking range for a room ID.
         return availabilityRepository.getMinAvailableRooms(roomId, checkinDate, checkoutDate)
                 .orElse(room.getRoomCount()); // Consider no record as full availability
     }
+
 }
