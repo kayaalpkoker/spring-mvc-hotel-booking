@@ -3,10 +3,12 @@ package edu.sabanciuniv.hotelbookingapp.controller;
 import edu.sabanciuniv.hotelbookingapp.exception.UsernameAlreadyExistsException;
 import edu.sabanciuniv.hotelbookingapp.model.RoleType;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
+import edu.sabanciuniv.hotelbookingapp.security.RedirectUtil;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +23,14 @@ public class AuthController {
     private final UserService userService;
 
     @GetMapping("/")
-    public String homePage() {
+    public String homePage(Authentication authentication) {
         log.debug("Accessing home page");
+        if (authentication != null && authentication.isAuthenticated()) {
+            String redirectUrl = RedirectUtil.getRedirectUrl(authentication);
+            if (redirectUrl != null) {
+                return "redirect:" + redirectUrl;
+            }
+        }
         return "index";
     }
 

@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Getter
@@ -26,15 +24,12 @@ public class Hotel {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @ElementCollection
-    @CollectionTable(name = "hotel_room_counts", joinColumns = @JoinColumn(name = "hotel_id"))
-    @MapKeyColumn(name = "room_type")
-    @MapKeyEnumerated(EnumType.STRING)
-    @Column(name = "count")
-    private Map<RoomType, Integer> roomCounts = new HashMap<>();
+    @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Room> rooms = new ArrayList<>();
 
     @OneToMany(mappedBy = "hotel")
-    private List<Booking> bookingList = new ArrayList<>();
+    private List<Booking> bookings = new ArrayList<>();
 
     @ManyToOne
     private HotelManager hotelManager;

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
+<head>
+    <title>Search Hotel</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row col-md-8 offset-md-2">
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="text-center">Search for Hotels</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" th:action="@{/search}" th:object="${hotelSearchDTO}">
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="city">City:</label>
+                            <input class="form-control" id="city" type="text" th:field="*{city}"
+                                   placeholder="Enter city">
+                            <p class="text-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></p>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="checkinDate">Check-in Date:</label>
+                            <input class="form-control" id="checkinDate" type="date" th:field="*{checkinDate}">
+                            <p class="text-danger" th:if="${#fields.hasErrors('checkinDate')}" th:errors="*{checkinDate}"></p>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label class="form-label" for="checkoutDate">Check-out Date:</label>
+                            <input class="form-control" id="checkoutDate" type="date" th:field="*{checkoutDate}">
+                            <p class="text-danger" th:if="${#fields.hasErrors('checkoutDate')}" th:errors="*{checkoutDate}"></p>
+                        </div>
+                        <div class="form-group mb-3">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

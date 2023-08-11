@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 @Getter
@@ -19,6 +17,10 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    // CONSIDER DELETING (A relation to Room already exists, which links to hotel)
+    // TODO: 9.08.2023
+
     // Unidirectional relationship due to business logic and performance considerations.
     // Logic: Querying Availability based on specific dates, rather than getting all Availability entities for a Hotel
     @ManyToOne
@@ -26,11 +28,9 @@ public class Availability {
 
     private LocalDate date;
 
-    @ElementCollection
-    @CollectionTable(name = "availability_room_counts", joinColumns = @JoinColumn(name = "availability_id"))
-    @MapKeyEnumerated(EnumType.STRING)
-    @MapKeyColumn(name = "room_type")
-    @Column(name = "count")
-    private Map<RoomType, Integer> availableRoomCounts = new HashMap<>();
+    @ManyToOne
+    private Room room;
+
+    private int availableRooms;
 
 }

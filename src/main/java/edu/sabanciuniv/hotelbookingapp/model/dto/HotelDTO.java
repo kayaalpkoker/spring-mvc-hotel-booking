@@ -23,7 +23,7 @@ public class HotelDTO {
     private AddressDTO addressDTO;
 
     @Valid
-    private List<RoomCountDTO> roomCountDTOS = new ArrayList<>();
+    private List<RoomDTO> roomDTOs = new ArrayList<>();
 
     private String managerUsername;
 

@@ -18,13 +18,13 @@ import java.util.List;
 public class HotelRegistrationDTO {
 
     @NotBlank(message = "Hotel name cannot be empty")
-    @Pattern(regexp = "^(?!\\s*$)[A-Za-z ]+$", message = "Hotel name must only contain letters")
+    @Pattern(regexp = "^(?!\\s*$)[A-Za-z0-9 ]+$", message = "Hotel name must only contain letters and numbers")
     private String name;
 
     @Valid
     private AddressDTO addressDTO;
 
     @Valid
-    private List<RoomCountDTO> roomCountDTOS = new ArrayList<>();
+    private List<RoomDTO> roomDTOs = new ArrayList<>();
 
 }

@@ -10,9 +10,8 @@
         <div class="row">
             <div class="col-md-12">
                 <h2>My Hotels</h2>
-                <div th:if="${param.success}">
-                    <div class="alert alert-success">
-                        Hotel (ID: <span th:text="${updatedHotelId}"></span>) info has been successfully updated
+                <div th:if="${message}">
+                    <div class="alert alert-success" th:text="${message}">
                     </div>
                 </div>
                 <table class="table table-striped align-middle">
@@ -20,6 +19,8 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Single Room Price ($)</th>
+                        <th>Double Room Price ($)</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -28,6 +29,8 @@
                     <tr class="align-middle" th:each="hotel : ${hotels}">
                         <td th:text="${hotel.id}"></td>
                         <td th:text="${hotel.name}"></td>
+                        <td th:each="room : ${hotel.roomDTOs}" th:if="${room.roomType.name() == 'SINGLE'}" th:text="${room.pricePerNight}"></td>
+                        <td th:each="room : ${hotel.roomDTOs}" th:if="${room.roomType.name() == 'DOUBLE'}" th:text="${room.pricePerNight}"></td>
                         <td>
                             <a th:href="@{/manager/hotels/edit/{id}(id=${hotel.id})}">Edit</a>
                         </td>

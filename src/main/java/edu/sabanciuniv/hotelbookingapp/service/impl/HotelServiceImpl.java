@@ -4,10 +4,7 @@ import edu.sabanciuniv.hotelbookingapp.exception.HotelAlreadyExistsException;
 import edu.sabanciuniv.hotelbookingapp.model.*;
 import edu.sabanciuniv.hotelbookingapp.model.dto.*;
 import edu.sabanciuniv.hotelbookingapp.repository.HotelRepository;
-import edu.sabanciuniv.hotelbookingapp.service.AddressService;
-import edu.sabanciuniv.hotelbookingapp.service.HotelManagerService;
-import edu.sabanciuniv.hotelbookingapp.service.HotelService;
-import edu.sabanciuniv.hotelbookingapp.service.UserService;
+import edu.sabanciuniv.hotelbookingapp.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,6 +24,7 @@ public class HotelServiceImpl implements HotelService {
 
     private final HotelRepository hotelRepository;
     private final AddressService addressService;
+    private final RoomService roomService;
     private final UserService userService;
     private final HotelManagerService hotelManagerService;
 
@@ -38,10 +35,11 @@ public class HotelServiceImpl implements HotelService {
 
         Optional<Hotel> existingHotel = hotelRepository.findByName(hotelRegistrationDTO.getName());
         if (existingHotel.isPresent()) {
-            throw new HotelAlreadyExistsException("This hotel is already registered!");
+            throw new HotelAlreadyExistsException("This hotel name is already registered!");
         }
 
         Hotel hotel = mapHotelRegistrationDtoToHotel(hotelRegistrationDTO);
+
         Address savedAddress = addressService.saveAddress(hotelRegistrationDTO.getAddressDTO());
         hotel.setAddress(savedAddress);
 
@@ -50,6 +48,12 @@ public class HotelServiceImpl implements HotelService {
         // Retrieve the Hotel Manager associated with this username
         HotelManager hotelManager = hotelManagerService.findByUser(userService.findUserByUsername(username));
         hotel.setHotelManager(hotelManager);
+
+        // Saving hotel to be able to bind rooms to hotel id
+        hotel = hotelRepository.save(hotel);
+
+        List<Room> savedRooms = roomService.saveRooms(hotelRegistrationDTO.getRoomDTOs(), hotel);
+        hotel.setRooms(savedRooms);
 
         Hotel savedHotel = hotelRepository.save(hotel);
         log.info("Successfully saved new hotel with ID: {}", hotel.getId());
@@ -95,8 +99,7 @@ public class HotelServiceImpl implements HotelService {
         Address updatedAddress = addressService.updateAddress(hotelDTO.getAddressDTO());
         existingHotel.setAddress(updatedAddress);
 
-        existingHotel.setRoomCounts(hotelDTO.getRoomCountDTOS().stream()
-                .collect(Collectors.toMap(RoomCountDTO::getRoomType, RoomCountDTO::getCount)));
+        hotelDTO.getRoomDTOs().forEach(roomService::updateRoom);
 
         hotelRepository.save(existingHotel);
         log.info("Successfully updated existing hotel with ID: {}", hotelDTO.getId());
@@ -142,8 +145,7 @@ public class HotelServiceImpl implements HotelService {
         Address updatedAddress = addressService.updateAddress(hotelDTO.getAddressDTO());
         existingHotel.setAddress(updatedAddress);
 
-        existingHotel.setRoomCounts(hotelDTO.getRoomCountDTOS().stream()
-                .collect(Collectors.toMap(RoomCountDTO::getRoomType, RoomCountDTO::getCount)));
+        hotelDTO.getRoomDTOs().forEach(roomService::updateRoom);
 
         hotelRepository.save(existingHotel);
         log.info("Successfully updated existing hotel with ID: {} for Manager ID: {}", hotelDTO.getId(), managerId);
@@ -159,47 +161,25 @@ public class HotelServiceImpl implements HotelService {
     }
 
     private Hotel mapHotelRegistrationDtoToHotel(HotelRegistrationDTO dto) {
-        Map<RoomType, Integer> roomCounts = dto.getRoomCountDTOS().stream()
-                .collect(Collectors.toMap(RoomCountDTO::getRoomType, RoomCountDTO::getCount));
-
         return Hotel.builder()
                 .name(formatText(dto.getName()))
-                .roomCounts(roomCounts)
                 .build();
     }
 
-    private HotelDTO mapHotelToHotelDto(Hotel hotel) {
-        // Convert Map<RoomType, Integer> to List<RoomCountDTO>
-        List<RoomCountDTO> roomCountDTOs = hotel.getRoomCounts().entrySet().stream()
-                .map(entry -> new RoomCountDTO(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
+    @Override
+    public HotelDTO mapHotelToHotelDto(Hotel hotel) {
+        List<RoomDTO> roomDTOs = hotel.getRooms().stream()
+                .map(roomService::mapRoomToRoomDto)  // convert each Room to RoomDTO
+                .collect(Collectors.toList());  // collect results to a list
 
-        AddressDTO addressDTO = mapAddressToAddressDto(hotel.getAddress());
+        AddressDTO addressDTO = addressService.mapAddressToAddressDto(hotel.getAddress());
 
         return HotelDTO.builder()
                 .id(hotel.getId())
                 .name(hotel.getName())
                 .addressDTO(addressDTO)
-                .roomCountDTOS(roomCountDTOs)
+                .roomDTOs(roomDTOs)
                 .managerUsername(hotel.getHotelManager().getUser().getUsername())
-                .build();
-    }
-
-    private AddressDTO mapAddressToAddressDto(Address address) {
-        return AddressDTO.builder()
-                .id(address.getId())
-                .addressLine(address.getAddressLine())
-                .city(address.getCity())
-                .country(address.getCountry())
-                .build();
-    }
-
-    private Address mapAddressDtoToAddress(AddressDTO addressDTO) {
-        return Address.builder()
-                .id(addressDTO.getId())
-                .addressLine(addressDTO.getAddressLine())
-                .city(addressDTO.getCity())
-                .country(addressDTO.getCountry())
                 .build();
     }
 

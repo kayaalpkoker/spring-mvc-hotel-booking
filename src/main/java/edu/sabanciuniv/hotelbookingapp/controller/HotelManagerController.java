@@ -4,9 +4,10 @@ import edu.sabanciuniv.hotelbookingapp.exception.HotelAlreadyExistsException;
 import edu.sabanciuniv.hotelbookingapp.model.RoomType;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelRegistrationDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.RoomCountDTO;
+import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
 import edu.sabanciuniv.hotelbookingapp.service.HotelService;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +38,11 @@ public class HotelManagerController {
     public String showAddHotelForm(Model model) {
         HotelRegistrationDTO hotelRegistrationDTO = new HotelRegistrationDTO();
 
-        // Initialize roomCountDTOS with SINGLE and DOUBLE room types
-        RoomCountDTO singleRoom = new RoomCountDTO(RoomType.SINGLE, 0);
-        RoomCountDTO doubleRoom = new RoomCountDTO(RoomType.DOUBLE, 0);
-        hotelRegistrationDTO.getRoomCountDTOS().add(singleRoom);
-        hotelRegistrationDTO.getRoomCountDTOS().add(doubleRoom);
+        // Initialize roomDTOs with SINGLE and DOUBLE room types
+        RoomDTO singleRoom = new RoomDTO(null, null, RoomType.SINGLE, 0, 0.0);
+        RoomDTO doubleRoom = new RoomDTO(null, null, RoomType.DOUBLE, 0, 0.0);
+        hotelRegistrationDTO.getRoomDTOs().add(singleRoom);
+        hotelRegistrationDTO.getRoomDTOs().add(doubleRoom);
 
         model.addAttribute("hotel", hotelRegistrationDTO);
         return "hotelmanager/hotels-add";
@@ -55,8 +56,8 @@ public class HotelManagerController {
         }
         try {
             hotelService.saveHotel(hotelRegistrationDTO);
-            redirectAttributes.addFlashAttribute("hotelName", hotelRegistrationDTO.getName());
-            return "redirect:/hotelmanager/hotels?success";
+            redirectAttributes.addFlashAttribute("message", "Hotel (" + hotelRegistrationDTO.getName() + ") added successfully");
+            return "redirect:/manager/hotels";
         } catch (HotelAlreadyExistsException e) {
             result.rejectValue("name", "hotel.exists", e.getMessage());
             return "hotelmanager/hotels-add";
@@ -88,12 +89,16 @@ public class HotelManagerController {
             Long managerId = getCurrentManagerId();
             hotelDTO.setId(id); // set the id from the path variable
             hotelService.updateHotelByManagerId(hotelDTO, managerId);
+            redirectAttributes.addFlashAttribute("message", "Hotel (ID: " + id + ") updated successfully");
+            return "redirect:/manager/hotels";
+
         } catch (HotelAlreadyExistsException e) {
             result.rejectValue("name", "hotel.exists", e.getMessage());
             return "hotelmanager/hotels-edit";
+        } catch (EntityNotFoundException e) {
+            result.rejectValue("id", "hotel.notfound", e.getMessage());
+            return "hotelmanager/hotels-edit";
         }
-        redirectAttributes.addFlashAttribute("updatedHotelId", hotelDTO.getId());
-        return "redirect:/manager/hotels?success";
     }
 
     @PostMapping("/hotels/delete/{id}")
