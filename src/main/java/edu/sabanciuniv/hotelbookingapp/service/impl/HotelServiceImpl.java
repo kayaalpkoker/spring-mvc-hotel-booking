@@ -35,7 +35,7 @@ public class HotelServiceImpl implements HotelService {
 
         Optional<Hotel> existingHotel = hotelRepository.findByName(hotelRegistrationDTO.getName());
         if (existingHotel.isPresent()) {
-            throw new HotelAlreadyExistsException("This hotel is already registered!");
+            throw new HotelAlreadyExistsException("This hotel name is already registered!");
         }
 
         Hotel hotel = mapHotelRegistrationDtoToHotel(hotelRegistrationDTO);

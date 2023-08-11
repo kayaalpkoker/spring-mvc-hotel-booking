@@ -1,10 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Hotel Details</title>
+    <th:block th:insert="~{fragment/leaflet :: leaflet-css}"></th:block>
 </head>
 <body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row align-items-stretch mb-4">
+            <div class="col-md-6">
+                <h3 class="mb-4" th:text="${hotel.name}">Hotel Name</h3>
+                <p class="mb-2" th:text="${hotel.addressDTO.addressLine}">Address Line</p>
+                <p th:text="${hotel.addressDTO.city + ', ' + hotel.addressDTO.country}">City, Country</p>
+            </div>
+            <div class="col-md-6 d-flex">
+                <div id="map" class="border bg-light flex-grow-1" style="min-height: 300px;"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Room Type</th>
+                        <th>Number of Guests</th>
+                        <th>Today's Price</th>
+                        <th>Select Rooms</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="room, iterStat : ${hotel.roomDTOs}">
+                        <td th:text="${room.roomType.name()}">Room Type</td>
+                        <td>
+                            <span th:if="${room.roomType.name() == 'SINGLE'}"><i class="bi-person-fill"></i></span>
+                            <span th:if="${room.roomType.name() == 'DOUBLE'}"><i class="bi-person-fill"></i><i
+                                    class="bi-person-fill"></i></span>
+                        </td>
+                        <td th:text="'$ ' + ${room.pricePerNight}">Price</td>
+                        <td>
+                            <select class="form-select room-select" th:data-price="${room.pricePerNight}">
+                                <option th:if="${room.roomType.name() == 'SINGLE'}"
+                                        th:each="num : ${#numbers.sequence(0, hotel.maxAvailableSingleRooms)}"
+                                        th:value="${num}" th:text="${num}"></option>
+                                <option th:if="${room.roomType.name() == 'DOUBLE'}"
+                                        th:each="num : ${#numbers.sequence(0, hotel.maxAvailableDoubleRooms)}"
+                                        th:value="${num}" th:text="${num}"></option>
+                            </select>
+                        </td>
+                        <!-- Display the button only on the first row, but make it span all rows -->
+                        <td th:if="${iterStat.index == 0}" th:attr="rowspan=${#lists.size(hotel.roomDTOs)}">
+                            <div class="mb-2">
+                                <strong>Price:</strong>
+                                <div id="totalPrice">$0.00</div>
+                            </div>
+                            <button class="btn btn-primary w-100" id="reserve-button">Reserve</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="additional-scripts">
+    <th:block th:insert="~{fragment/leaflet :: leaflet-js}"></th:block>
+    <script th:src="@{/js/hotel-map.js}"></script>
+    <!-- Initialize the hotel map with hotel address -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        document.addEventListener("DOMContentLoaded", function () {
+            initializeHotelMap([[${hotel.addressDTO.addressLine + ', ' + hotel.addressDTO.city + ', ' + hotel.addressDTO.country}]]);
+        });
+        /*]]>*/
+    </script>
+    <script>
+        $(document).ready(function() {
+            const roomSelect = $(".room-select");
+            const reserveButton = $("#reserve-button");
 
+            function calculateTotal() {
+                let total = 0;
+                roomSelect.each(function() {
+                    let roomPrice = $(this).data("price");
+                    let roomCount = parseInt($(this).val(), 10);
+                    total += roomPrice * roomCount;
+                });
+                $("#totalPrice").text("$" + total.toFixed(2));
+
+                // Check if total is 0 to disable/enable the Reserve button
+                if (total === 0) {
+                    reserveButton.prop('disabled', true); // disables the button
+                } else {
+                    reserveButton.prop('disabled', false); // enables the button
+                }
+            }
+            roomSelect.on("change", calculateTotal);
+            calculateTotal();  // Call initially to set initial value and button state if needed.
+        });
+    </script>
+</th:block>
 </body>
 </html>

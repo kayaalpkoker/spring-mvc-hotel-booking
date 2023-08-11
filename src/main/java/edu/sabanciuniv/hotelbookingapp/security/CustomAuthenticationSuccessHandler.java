@@ -19,7 +19,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        log.warn("Redirecting an authenticated user to the appropriate dashboard");
+        log.warn("Redirecting an authenticated user to the role-designated landing page");
 
         String redirectUrl = RedirectUtil.getRedirectUrl(authentication);
 

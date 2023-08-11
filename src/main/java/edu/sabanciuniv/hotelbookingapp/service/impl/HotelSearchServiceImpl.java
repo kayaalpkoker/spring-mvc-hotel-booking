@@ -7,6 +7,7 @@ import edu.sabanciuniv.hotelbookingapp.model.dto.HotelAvailabilityDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
 import edu.sabanciuniv.hotelbookingapp.repository.HotelRepository;
 import edu.sabanciuniv.hotelbookingapp.service.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,12 +32,14 @@ public class HotelSearchServiceImpl implements HotelSearchService {
 
     @Override
     public List<HotelAvailabilityDTO> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate) {
+        validateCheckinAndCheckoutDates(checkinDate, checkoutDate);
+
         log.info("Attempting to find hotels in {} with available rooms from {} to {}", city, checkinDate, checkoutDate);
 
-        // Calculate the number of days between check-in and check-out
+        // Number of days between check-in and check-out
         Long numberOfDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
 
-        // 1. Fetch hotels that satisfy the criteria
+        // 1. Fetch hotels that satisfy the criteria (min 1 available room throughout the booking range)
         List<Hotel> hotelsWithAvailableRooms = hotelRepository.findHotelsWithAvailableRooms(city, checkinDate, checkoutDate, numberOfDays);
 
         // 2. Fetch hotels that don't have any availability records for the entire booking range
@@ -55,6 +59,22 @@ public class HotelSearchServiceImpl implements HotelSearchService {
         return combinedHotels.stream()
                 .map(hotel -> mapHotelToHotelAvailabilityDto(hotel, checkinDate, checkoutDate))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public HotelAvailabilityDTO findAvailableHotelById(Long hotelId, LocalDate checkinDate, LocalDate checkoutDate) {
+        validateCheckinAndCheckoutDates(checkinDate, checkoutDate);
+
+        log.info("Attempting to find hotel with ID {} with available rooms from {} to {}", hotelId, checkinDate, checkoutDate);
+
+        Optional<Hotel> hotelOptional = hotelRepository.findById(hotelId);
+        if (hotelOptional.isEmpty()) {
+            log.error("No hotel found with ID: {}", hotelId);
+            throw new EntityNotFoundException("Hotel not found");
+        }
+
+        Hotel hotel = hotelOptional.get();
+        return mapHotelToHotelAvailabilityDto(hotel, checkinDate, checkoutDate);
     }
 
 
@@ -91,28 +111,13 @@ public class HotelSearchServiceImpl implements HotelSearchService {
         return hotelAvailabilityDTO;
     }
 
-}
-
-/*
-    public List<HotelAvailabilityDTO> findAvailableHotelsByCityAndDate(String city, LocalDate checkinDate, LocalDate checkoutDate) {
-        List<Hotel> hotels = hotelRepository.findHotelsByCity(city);
-        List<HotelAvailabilityDTO> availableHotels = new ArrayList<>();
-
-        for (Hotel hotel : hotels) {
-            boolean isAnyRoomAvailable = false;
-
-            for (Room room : hotel.getRooms()) {
-                if (availabilityService.isRoomAvailable(room.getId(), checkinDate, checkoutDate)) {
-                    isAnyRoomAvailable = true;
-                    break;  // Break once a room type is found available for the entire range.
-                }
-            }
-
-            // If at least one room type is available throughout the entire booking range, add the hotel to the result list
-            if (isAnyRoomAvailable) {
-                availableHotels.add(mapHotelToHotelAvailabilityDto(hotel, checkinDate, checkoutDate));
-            }
+    private void validateCheckinAndCheckoutDates(LocalDate checkinDate, LocalDate checkoutDate) {
+        if (checkinDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("Check-in date cannot be in the past");
         }
-        return availableHotels;
+        if (checkoutDate.isBefore(checkinDate.plusDays(1))) {
+            throw new IllegalArgumentException("Check-out date must be after check-in date");
+        }
     }
-     */
+
+}

@@ -68,11 +68,11 @@ public class TestDataInitializer implements CommandLineRunner {
                 hotelManagerRepository.save(hm2);
                 log.info("User data persisted");
 
-                Address addressIst1 = Address.builder().addressLine("Visnezade Mah Acisu Sokagi No:19 Macka").city("Istanbul")
+                Address addressIst1 = Address.builder().addressLine("Acısu Sokağı No:19, 34357").city("Istanbul")
                         .country("Turkey").build();
-                Address addressIst2 = Address.builder().addressLine("Ciragan Cad. No:28").city("Istanbul")
+                Address addressIst2 = Address.builder().addressLine("Çırağan Cd. No:28, 34349 Beşiktaş").city("Istanbul")
                         .country("Turkey").build();
-                Address addressIst3 = Address.builder().addressLine("Ciragan Cad. No:32").city("Istanbul")
+                Address addressIst3 = Address.builder().addressLine("Çırağan Cd. No:32, 34349 Beşiktaş").city("Istanbul")
                         .country("Turkey").build();
 
                 Address addressBerlin1 = Address.builder().addressLine("Unter den Linden 77").city("Berlin")
