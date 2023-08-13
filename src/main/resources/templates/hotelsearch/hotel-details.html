@@ -20,46 +20,52 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>Room Type</th>
-                        <th>Number of Guests</th>
-                        <th>Today's Price</th>
-                        <th>Select Rooms</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="room, iterStat : ${hotel.roomDTOs}">
-                        <td th:text="${room.roomType.name()}">Room Type</td>
-                        <td>
-                            <span th:if="${room.roomType.name() == 'SINGLE'}"><i class="bi-person-fill"></i></span>
-                            <span th:if="${room.roomType.name() == 'DOUBLE'}"><i class="bi-person-fill"></i><i
-                                    class="bi-person-fill"></i></span>
-                        </td>
-                        <td th:text="'$ ' + ${room.pricePerNight}">Price</td>
-                        <td>
-                            <select class="form-select room-select" th:data-price="${room.pricePerNight}">
-                                <option th:if="${room.roomType.name() == 'SINGLE'}"
-                                        th:each="num : ${#numbers.sequence(0, hotel.maxAvailableSingleRooms)}"
-                                        th:value="${num}" th:text="${num}"></option>
-                                <option th:if="${room.roomType.name() == 'DOUBLE'}"
-                                        th:each="num : ${#numbers.sequence(0, hotel.maxAvailableDoubleRooms)}"
-                                        th:value="${num}" th:text="${num}"></option>
-                            </select>
-                        </td>
-                        <!-- Display the button only on the first row, but make it span all rows -->
-                        <td th:if="${iterStat.index == 0}" th:attr="rowspan=${#lists.size(hotel.roomDTOs)}">
-                            <div class="mb-2">
-                                <strong>Price:</strong>
-                                <div id="totalPrice">$0.00</div>
-                            </div>
-                            <button class="btn btn-primary w-100" id="reserve-button">Reserve</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                <form action="/initiate-booking" method="post" id="booking-form">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Room Type</th>
+                            <th>Number of Guests</th>
+                            <th>Today's Price</th>
+                            <th>Select Rooms</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="room, iterStat : ${hotel.roomDTOs}">
+                            <td th:text="${room.roomType.name()}">Room Type</td>
+                            <td>
+                                <span th:if="${room.roomType.name() == 'SINGLE'}"><i class="bi-person-fill"></i></span>
+                                <span th:if="${room.roomType.name() == 'DOUBLE'}"><i class="bi-person-fill"></i><i
+                                        class="bi-person-fill"></i></span>
+                            </td>
+                            <td th:text="'$ ' + ${room.pricePerNight}">Price</td>
+                            <td>
+                                <select class="form-select room-select" th:data-price="${room.pricePerNight}">
+                                    <option th:if="${room.roomType.name() == 'SINGLE'}"
+                                            th:each="num : ${#numbers.sequence(0, hotel.maxAvailableSingleRooms)}"
+                                            th:value="${num}" th:text="${num}"></option>
+                                    <option th:if="${room.roomType.name() == 'DOUBLE'}"
+                                            th:each="num : ${#numbers.sequence(0, hotel.maxAvailableDoubleRooms)}"
+                                            th:value="${num}" th:text="${num}"></option>
+                                </select>
+                                <input type="hidden" th:name="${'roomSelections[' + iterStat.index + '].roomType'}" th:value="${room.roomType.name()}"/>
+                            </td>
+                            <!-- Display the button only on the first row, but make it span all rows -->
+                            <td th:if="${iterStat.index == 0}" th:attr="rowspan=${#lists.size(hotel.roomDTOs)}">
+                                <div class="mb-2">
+                                    <h4><strong>Total:</strong></h4>
+                                    <div id="totalPrice">$0.00</div>
+                                </div>
+                                <button class="btn btn-secondary w-100" id="reserve-button" disabled>Reserve</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="hotelId" th:value="${hotel.id}"/>
+                    <input type="hidden" name="bookingDate"
+                           th:value="${#dates.format(#dates.createToday(), 'yyyy-MM-dd')}"/>
+                </form>
             </div>
         </div>
     </div>
@@ -76,13 +82,13 @@
         /*]]>*/
     </script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             const roomSelect = $(".room-select");
             const reserveButton = $("#reserve-button");
 
             function calculateTotal() {
                 let total = 0;
-                roomSelect.each(function() {
+                roomSelect.each(function () {
                     let roomPrice = $(this).data("price");
                     let roomCount = parseInt($(this).val(), 10);
                     total += roomPrice * roomCount;
@@ -91,13 +97,21 @@
 
                 // Check if total is 0 to disable/enable the Reserve button
                 if (total === 0) {
-                    reserveButton.prop('disabled', true); // disables the button
+                    reserveButton.prop('disabled', true);
+                    reserveButton.removeClass('btn-primary').addClass('btn-secondary'); // Change button color to gray
                 } else {
-                    reserveButton.prop('disabled', false); // enables the button
+                    reserveButton.prop('disabled', false);
+                    reserveButton.removeClass('btn-secondary').addClass('btn-primary'); // Change button color to blue
                 }
             }
+
             roomSelect.on("change", calculateTotal);
             calculateTotal();  // Call initially to set initial value and button state if needed.
+
+            reserveButton.click(function() {
+                // Submit the booking form when the reserve button is clicked
+                $("#booking-form").submit();
+            });
         });
     </script>
 </th:block>

@@ -1,5 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.model;
 
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 

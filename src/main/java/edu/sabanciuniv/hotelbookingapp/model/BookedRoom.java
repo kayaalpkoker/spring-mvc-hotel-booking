@@ -10,20 +10,18 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Room {
+public class BookedRoom {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Hotel hotel;
+    private Booking booking;
 
     @Enumerated(EnumType.STRING)
     private RoomType roomType;
 
-    private int roomCount;
-
-    private double pricePerNight;
+    private int count;
 
 }

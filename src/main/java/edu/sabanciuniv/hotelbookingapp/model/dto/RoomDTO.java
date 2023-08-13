@@ -1,6 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.model.dto;
 
-import edu.sabanciuniv.hotelbookingapp.model.RoomType;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoomType;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;

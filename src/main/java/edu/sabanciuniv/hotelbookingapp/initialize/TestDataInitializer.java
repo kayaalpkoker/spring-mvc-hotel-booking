@@ -1,6 +1,8 @@
 package edu.sabanciuniv.hotelbookingapp.initialize;
 
 import edu.sabanciuniv.hotelbookingapp.model.*;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoleType;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoomType;
 import edu.sabanciuniv.hotelbookingapp.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

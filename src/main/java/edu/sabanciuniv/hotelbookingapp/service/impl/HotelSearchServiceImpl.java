@@ -1,7 +1,7 @@
 package edu.sabanciuniv.hotelbookingapp.service.impl;
 
 import edu.sabanciuniv.hotelbookingapp.model.Hotel;
-import edu.sabanciuniv.hotelbookingapp.model.RoomType;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoomType;
 import edu.sabanciuniv.hotelbookingapp.model.dto.AddressDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelAvailabilityDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;

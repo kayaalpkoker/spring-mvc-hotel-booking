@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
+// TODO: 13.08.2023 // Enable later
+/*
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -22,3 +24,5 @@ public class GlobalExceptionHandler {
         return modelAndView;
     }
 }
+
+ */

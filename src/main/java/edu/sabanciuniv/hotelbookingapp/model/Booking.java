@@ -5,6 +5,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -19,21 +21,21 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @CreationTimestamp
+    private LocalDate bookingDate;
+
     @ManyToOne
     private Customer customer;
 
     @ManyToOne
     private Hotel hotel;
 
-    @CreationTimestamp
-    private LocalDate bookingDate;
-
     private LocalDate checkinDate;
 
     private LocalDate checkoutDate;
 
-    // private int bookedSingleRooms;
-    // private int bookedDoubleRooms;
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BookedRoom> bookedRooms = new ArrayList<>();
 
     @OneToOne(mappedBy = "booking")
     private Payment payment;

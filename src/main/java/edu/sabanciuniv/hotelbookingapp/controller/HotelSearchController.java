@@ -43,7 +43,7 @@ public class HotelSearchController {
             return "hotelsearch/search";
         }
 
-        // Redirect to a new endpoint with parameters. The actual data fetching will now take place in the GET endpoint.
+        // Redirect to a new GET endpoint with parameters for data fetching. Allows page refreshing
         return String.format("redirect:/search-results?city=%s&checkinDate=%s&checkoutDate=%s", hotelSearchDTO.getCity(), hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
     }
 

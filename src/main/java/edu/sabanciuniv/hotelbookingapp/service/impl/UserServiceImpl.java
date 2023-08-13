@@ -5,6 +5,7 @@ import edu.sabanciuniv.hotelbookingapp.model.*;
 import edu.sabanciuniv.hotelbookingapp.model.dto.ResetPasswordDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoleType;
 import edu.sabanciuniv.hotelbookingapp.repository.CustomerRepository;
 import edu.sabanciuniv.hotelbookingapp.repository.HotelManagerRepository;
 import edu.sabanciuniv.hotelbookingapp.repository.RoleRepository;

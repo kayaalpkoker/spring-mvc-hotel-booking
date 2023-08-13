@@ -1,4 +1,4 @@
-package edu.sabanciuniv.hotelbookingapp.model;
+package edu.sabanciuniv.hotelbookingapp.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

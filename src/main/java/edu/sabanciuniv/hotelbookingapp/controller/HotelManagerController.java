@@ -1,7 +1,7 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
 import edu.sabanciuniv.hotelbookingapp.exception.HotelAlreadyExistsException;
-import edu.sabanciuniv.hotelbookingapp.model.RoomType;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoomType;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelRegistrationDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
