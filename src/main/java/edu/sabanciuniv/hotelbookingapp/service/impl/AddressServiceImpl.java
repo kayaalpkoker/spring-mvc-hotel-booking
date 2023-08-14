@@ -28,6 +28,14 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public AddressDTO findAddressById(Long id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
+
+        return mapAddressToAddressDto(address);
+    }
+
+    @Override
     public Address updateAddress(AddressDTO addressDTO) {
         log.info("Attempting to update address with ID: {}", addressDTO.getId());
         Address existingAddress = addressRepository.findById(addressDTO.getId())
@@ -38,14 +46,6 @@ public class AddressServiceImpl implements AddressService {
         Address updatedAddress = addressRepository.save(existingAddress);
         log.info("Successfully updated address with ID: {}", existingAddress.getId());
         return updatedAddress;
-    }
-
-    @Override
-    public AddressDTO findAddressById(Long id) {
-        Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Address not found"));
-
-        return mapAddressToAddressDto(address);
     }
 
     @Override

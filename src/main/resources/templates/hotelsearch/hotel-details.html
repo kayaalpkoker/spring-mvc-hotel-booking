@@ -10,7 +10,7 @@
     <div class="container">
         <div class="row align-items-stretch mb-4">
             <div class="col-md-6">
-                <h3 class="mb-4" th:text="${hotel.name}">Hotel Name</h3>
+                <h3 class="mb-3"><strong th:text="${hotel.name}">Hotel Name</strong></h3>
                 <p class="mb-2" th:text="${hotel.addressDTO.addressLine}">Address Line</p>
                 <p th:text="${hotel.addressDTO.city + ', ' + hotel.addressDTO.country}">City, Country</p>
             </div>
@@ -18,15 +18,26 @@
                 <div id="map" class="border bg-light flex-grow-1" style="min-height: 300px;"></div>
             </div>
         </div>
+        <hr>
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <h4>Availability</h4>
+                <p>
+                    <span th:text="${checkinDate}"></span>
+                    <span class="mx-3">>>></span>
+                    <span th:text="${checkoutDate}"></span>
+                </p>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12">
-                <form action="/initiate-booking" method="post" id="booking-form">
+                <form action="/booking/initiate" method="post" id="booking-form">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th>Room Type</th>
                             <th>Number of Guests</th>
-                            <th>Today's Price</th>
+                            <th>Price for <span th:text="${durationDays}"></span> Night(s)</th>
                             <th>Select Rooms</th>
                             <th></th>
                         </tr>
@@ -39,9 +50,10 @@
                                 <span th:if="${room.roomType.name() == 'DOUBLE'}"><i class="bi-person-fill"></i><i
                                         class="bi-person-fill"></i></span>
                             </td>
-                            <td th:text="'$ ' + ${room.pricePerNight}">Price</td>
+                            <td th:text="'$ ' + ${room.pricePerNight * durationDays}">Price</td>
                             <td>
-                                <select class="form-select room-select" th:data-price="${room.pricePerNight}">
+                                <select class="form-select room-select"
+                                        th:data-duration-price="${room.pricePerNight * durationDays}">
                                     <option th:if="${room.roomType.name() == 'SINGLE'}"
                                             th:each="num : ${#numbers.sequence(0, hotel.maxAvailableSingleRooms)}"
                                             th:value="${num}" th:text="${num}"></option>
@@ -49,7 +61,10 @@
                                             th:each="num : ${#numbers.sequence(0, hotel.maxAvailableDoubleRooms)}"
                                             th:value="${num}" th:text="${num}"></option>
                                 </select>
-                                <input type="hidden" th:name="${'roomSelections[' + iterStat.index + '].roomType'}" th:value="${room.roomType.name()}"/>
+                                <input type="hidden" th:name="${'roomSelections[' + iterStat.index + '].roomType'}"
+                                       th:value="${room.roomType.name()}"/>
+                                <input type="hidden" th:name="${'roomSelections[' + iterStat.index + '].count'}"
+                                       value="0" id="roomCountInput"/>
                             </td>
                             <!-- Display the button only on the first row, but make it span all rows -->
                             <td th:if="${iterStat.index == 0}" th:attr="rowspan=${#lists.size(hotel.roomDTOs)}">
@@ -62,9 +77,13 @@
                         </tr>
                         </tbody>
                     </table>
-                    <input type="hidden" name="hotelId" th:value="${hotel.id}"/>
                     <input type="hidden" name="bookingDate"
                            th:value="${#dates.format(#dates.createToday(), 'yyyy-MM-dd')}"/>
+                    <input type="hidden" id="totalPriceInput" name="totalPrice"/>
+                    <input type="hidden" name="hotelId" th:value="${hotel.id}"/>
+                    <input type="hidden" name="checkinDate" th:value="${checkinDate}"/>
+                    <input type="hidden" name="checkoutDate" th:value="${checkoutDate}"/>
+                    <input type="hidden" name="durationDays" th:value="${durationDays}"/>
                 </form>
             </div>
         </div>
@@ -86,32 +105,54 @@
             const roomSelect = $(".room-select");
             const reserveButton = $("#reserve-button");
 
+            // Reset the room selection
+            function resetRoomSelection() {
+                roomSelect.each(function () {
+                    $(this).val(0);
+                });
+            }
+
+            // Calculate the total cost
             function calculateTotal() {
                 let total = 0;
                 roomSelect.each(function () {
-                    let roomPrice = $(this).data("price");
+                    let roomDurationPrice = parseFloat($(this).data("duration-price"));
                     let roomCount = parseInt($(this).val(), 10);
-                    total += roomPrice * roomCount;
+                    total += roomDurationPrice * roomCount;
                 });
-                $("#totalPrice").text("$" + total.toFixed(2));
 
-                // Check if total is 0 to disable/enable the Reserve button
+                $("#totalPrice").text("$" + total.toFixed(2));
+                $("#totalPriceInput").val(total.toFixed(2));
+
                 if (total === 0) {
                     reserveButton.prop('disabled', true);
-                    reserveButton.removeClass('btn-primary').addClass('btn-secondary'); // Change button color to gray
+                    reserveButton.removeClass('btn-primary').addClass('btn-secondary');
                 } else {
                     reserveButton.prop('disabled', false);
-                    reserveButton.removeClass('btn-secondary').addClass('btn-primary'); // Change button color to blue
+                    reserveButton.removeClass('btn-secondary').addClass('btn-primary');
                 }
             }
 
-            roomSelect.on("change", calculateTotal);
-            calculateTotal();  // Call initially to set initial value and button state if needed.
+            // Reset room selection whenever page is shown
+            $(window).on("pageshow", function () {
+                resetRoomSelection();
+                calculateTotal();
+            });
 
-            reserveButton.click(function() {
-                // Submit the booking form when the reserve button is clicked
+            // Update the room count and calculate the total when room selection changes
+            roomSelect.on("change", function () {
+                let count = $(this).val();
+                $(this).siblings("#roomCountInput").val(count);
+                calculateTotal();
+            });
+
+            // Event for clicking the reserve button
+            reserveButton.click(function () {
                 $("#booking-form").submit();
             });
+
+            // Initial function calls
+            calculateTotal();
         });
     </script>
 </th:block>

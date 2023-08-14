@@ -1,9 +1,9 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
-import edu.sabanciuniv.hotelbookingapp.model.dto.BookingDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.PaymentDTO;
-import edu.sabanciuniv.hotelbookingapp.service.BookingService;
-import edu.sabanciuniv.hotelbookingapp.service.HotelSearchService;
+import edu.sabanciuniv.hotelbookingapp.model.dto.BookingInitiationDTO;
+import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
+import edu.sabanciuniv.hotelbookingapp.model.dto.PaymentCardDTO;
+import edu.sabanciuniv.hotelbookingapp.service.HotelService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,49 +14,71 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
+@RequestMapping("/booking")
 @RequiredArgsConstructor
 @Slf4j
 public class BookingController {
 
-    private final HotelSearchService hotelSearchService;
-    private final BookingService bookingService;
+    private final HotelService hotelService;
 
-    @PostMapping("/initiate-booking")
-    public String initiateBooking(@ModelAttribute BookingDTO bookingDTO, RedirectAttributes redirectAttributes, HttpSession session) {
-        session.setAttribute("bookingDTO", bookingDTO);
-        return "redirect:/payment";
+    @PostMapping("/initiate")
+    public String initiateBooking(@ModelAttribute BookingInitiationDTO bookingInitiationDTO, RedirectAttributes redirectAttributes, HttpSession session) {
+        session.setAttribute("bookingInitiationDTO", bookingInitiationDTO);
+        log.debug("BookingInitiationDTO set in session: {}", bookingInitiationDTO);
+        return "redirect:/booking/payment";
     }
 
     @GetMapping("/payment")
     public String showPaymentPage(Model model, RedirectAttributes redirectAttributes, HttpSession session) {
-        BookingDTO bookingDTO = (BookingDTO) session.getAttribute("bookingDTO");
-        if (bookingDTO == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "No booking details found. Please start a new search.");
+        BookingInitiationDTO bookingInitiationDTO = (BookingInitiationDTO) session.getAttribute("bookingInitiationDTO");
+        log.debug("BookingInitiationDTO retrieved from session: {}", bookingInitiationDTO);
+
+        if (bookingInitiationDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Your session has expired. Please start a new search.");
             return "redirect:/search";
         }
 
-        model.addAttribute("bookingDTO", bookingDTO);
-        model.addAttribute("paymentDTO", new PaymentDTO());
+        HotelDTO hotelDTO = hotelService.findHotelById(bookingInitiationDTO.getHotelId());
 
-        return "payment";
+        model.addAttribute("bookingInitiationDTO", bookingInitiationDTO);
+        model.addAttribute("hotelDTO", hotelDTO);
+        model.addAttribute("paymentCardDTO", new PaymentCardDTO());
+
+        return "booking/payment";
     }
 
-    @PostMapping("/finalize-booking")
-    public String finalizeBooking(@Valid @ModelAttribute("paymentDTO") PaymentDTO paymentDTO, BindingResult result, HttpSession session) {
-        // Validate paymentDTO...
+    @PostMapping("/payment")
+    public String completeBooking(@Valid @ModelAttribute("paymentCardDTO") PaymentCardDTO paymentDTO, BindingResult result, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        BookingInitiationDTO bookingInitiationDTO = (BookingInitiationDTO) session.getAttribute("bookingInitiationDTO");
+        log.debug("BookingInitiationDTO retrieved from session at the beginning of completeBooking: {}", bookingInitiationDTO);
+        if (bookingInitiationDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Your session has expired. Please start a new search.");
+            return "redirect:/search";
+        }
 
-        BookingDTO bookingDTO = (BookingDTO) session.getAttribute("bookingDTO");
+        if (result.hasErrors()) {
+            log.warn("Validation errors occurred while completing booking");
+            HotelDTO hotelDTO = hotelService.findHotelById(bookingInitiationDTO.getHotelId());
+            model.addAttribute("bookingInitiationDTO", bookingInitiationDTO);
+            model.addAttribute("hotelDTO", hotelDTO);
+            model.addAttribute("paymentCardDTO", paymentDTO);
+            return "booking/payment";
+        }
 
-        // Map bookingDTO and paymentDTO to entities...
-        //Booking booking = convertToEntity(bookingDTO);
+        try {
+            // Map bookingDTO and paymentDTO to entities...
+            // Save to the database
 
-        // Save to the database
-
-        return "bookingConfirmation";
+            return "bookingConfirmation";
+        } catch (Exception e) {
+            log.error("An error occurred while completing the booking", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
+            return "redirect:/booking/payment"; // Redirect back to the payment page
+        }
     }
-
 }

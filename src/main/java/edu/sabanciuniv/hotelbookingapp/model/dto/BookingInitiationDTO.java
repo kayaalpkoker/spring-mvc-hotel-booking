@@ -14,20 +14,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BookingDTO {
+public class BookingInitiationDTO {
 
-    // TODO: 14.08.2023  
-    private Long id;
+    private long hotelId;
     private LocalDate bookingDate;
-    private Long customerId;
-    private Long hotelId;
     private LocalDate checkinDate;
     private LocalDate checkoutDate;
+    private long durationDays;
     private List<RoomSelectionDTO> roomSelections = new ArrayList<>();
     private BigDecimal totalPrice;
 
-    private String hotelName;
-    private String customerName;
-    private String customerEmail;
-    
 }
