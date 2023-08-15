@@ -75,6 +75,11 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    public Optional<Hotel> findHotelModelById(Long id) {
+        return hotelRepository.findById(id);
+    }
+
+    @Override
     public List<HotelDTO> findAllHotels() {
         List<Hotel> hotels = hotelRepository.findAll();
         return hotels.stream()

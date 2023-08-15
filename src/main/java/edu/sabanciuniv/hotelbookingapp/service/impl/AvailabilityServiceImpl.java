@@ -1,5 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.service.impl;
 
+import edu.sabanciuniv.hotelbookingapp.model.Availability;
 import edu.sabanciuniv.hotelbookingapp.model.Room;
 import edu.sabanciuniv.hotelbookingapp.repository.AvailabilityRepository;
 import edu.sabanciuniv.hotelbookingapp.service.AvailabilityService;
@@ -18,6 +19,12 @@ public class AvailabilityServiceImpl implements AvailabilityService {
 
     private final AvailabilityRepository availabilityRepository;
     private final RoomService roomService;
+
+    @Override
+    public Availability saveAvailability() {
+        // Check if an availability entry already exists for a date, update it if exists, save new one if it doesn't exist
+        return null;
+    }
 
     @Override
     public Integer getMinAvailableRooms(Long roomId, LocalDate checkinDate, LocalDate checkoutDate) {

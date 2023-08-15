@@ -5,6 +5,7 @@ import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelRegistrationDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface HotelService {
 
@@ -13,6 +14,8 @@ public interface HotelService {
     HotelDTO findHotelDtoByName(String name);
 
     HotelDTO findHotelById(Long id);
+
+    Optional<Hotel> findHotelModelById(Long id);
 
     List<HotelDTO> findAllHotels();
 

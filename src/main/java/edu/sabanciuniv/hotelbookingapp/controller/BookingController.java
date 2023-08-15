@@ -3,11 +3,15 @@ package edu.sabanciuniv.hotelbookingapp.controller;
 import edu.sabanciuniv.hotelbookingapp.model.dto.BookingInitiationDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.PaymentCardDTO;
+import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
 import edu.sabanciuniv.hotelbookingapp.service.HotelService;
+import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class BookingController {
 
     private final HotelService hotelService;
+    private final UserService userService;
 
     @PostMapping("/initiate")
     public String initiateBooking(@ModelAttribute BookingInitiationDTO bookingInitiationDTO, RedirectAttributes redirectAttributes, HttpSession session) {
@@ -53,7 +58,7 @@ public class BookingController {
     }
 
     @PostMapping("/payment")
-    public String completeBooking(@Valid @ModelAttribute("paymentCardDTO") PaymentCardDTO paymentDTO, BindingResult result, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String confirmBooking(@Valid @ModelAttribute("paymentCardDTO") PaymentCardDTO paymentDTO, BindingResult result, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
         BookingInitiationDTO bookingInitiationDTO = (BookingInitiationDTO) session.getAttribute("bookingInitiationDTO");
         log.debug("BookingInitiationDTO retrieved from session at the beginning of completeBooking: {}", bookingInitiationDTO);
         if (bookingInitiationDTO == null) {
@@ -71,14 +76,23 @@ public class BookingController {
         }
 
         try {
-            // Map bookingDTO and paymentDTO to entities...
             // Save to the database
+            Long userId = getLoggedInUserId();
 
-            return "bookingConfirmation";
+            return "/booking/confirmation";
         } catch (Exception e) {
             log.error("An error occurred while completing the booking", e);
             redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
             return "redirect:/booking/payment"; // Redirect back to the payment page
         }
     }
+
+    private Long getLoggedInUserId() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        UserDTO userDTO = userService.findUserDTOByUsername(username);
+        log.info("Fetched logged in user ID: {}", userDTO.getId());
+        return userDTO.getId();
+    }
+
 }
