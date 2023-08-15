@@ -17,7 +17,6 @@ import java.util.List;
 public class BookingInitiationDTO {
 
     private long hotelId;
-    private LocalDate bookingDate;
     private LocalDate checkinDate;
     private LocalDate checkoutDate;
     private long durationDays;

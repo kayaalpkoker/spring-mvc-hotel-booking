@@ -21,11 +21,11 @@ public class RoomDTO {
     private RoomType roomType;
 
     @NotNull(message = "Room count cannot be empty")
-    @PositiveOrZero(message = "Room amount must be 0 or more")
+    @PositiveOrZero(message = "Room count must be 0 or more")
     private Integer roomCount;
 
     @NotNull(message = "Price cannot be empty")
-    @PositiveOrZero(message = "Room amount must be 0 or more")
+    @PositiveOrZero(message = "Price per night must be 0 or more")
     private Double pricePerNight;
 
 }

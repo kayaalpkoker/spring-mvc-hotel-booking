@@ -77,8 +77,6 @@
                         </tr>
                         </tbody>
                     </table>
-                    <input type="hidden" name="bookingDate"
-                           th:value="${#dates.format(#dates.createToday(), 'yyyy-MM-dd')}"/>
                     <input type="hidden" id="totalPriceInput" name="totalPrice"/>
                     <input type="hidden" name="hotelId" th:value="${hotel.id}"/>
                     <input type="hidden" name="checkinDate" th:value="${checkinDate}"/>
