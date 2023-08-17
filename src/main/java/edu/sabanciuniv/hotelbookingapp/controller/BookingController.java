@@ -4,6 +4,7 @@ import edu.sabanciuniv.hotelbookingapp.model.dto.BookingInitiationDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.PaymentCardDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
+import edu.sabanciuniv.hotelbookingapp.service.BookingService;
 import edu.sabanciuniv.hotelbookingapp.service.HotelService;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -30,6 +31,7 @@ public class BookingController {
 
     private final HotelService hotelService;
     private final UserService userService;
+    private final BookingService bookingService;
 
     @PostMapping("/initiate")
     public String initiateBooking(@ModelAttribute BookingInitiationDTO bookingInitiationDTO, RedirectAttributes redirectAttributes, HttpSession session) {
@@ -78,6 +80,7 @@ public class BookingController {
         try {
             // Save to the database
             Long userId = getLoggedInUserId();
+            bookingService.saveBooking(bookingInitiationDTO, userId);
 
             return "/booking/confirmation";
         } catch (Exception e) {
