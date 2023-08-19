@@ -13,9 +13,9 @@ public interface HotelService {
 
     HotelDTO findHotelDtoByName(String name);
 
-    HotelDTO findHotelById(Long id);
+    HotelDTO findHotelDtoById(Long id);
 
-    Optional<Hotel> findHotelModelById(Long id);
+    Optional<Hotel> findHotelById(Long id);
 
     List<HotelDTO> findAllHotels();
 

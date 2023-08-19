@@ -68,14 +68,14 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public HotelDTO findHotelById(Long id) {
+    public HotelDTO findHotelDtoById(Long id) {
         Hotel hotel = hotelRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Hotel not found"));
         return mapHotelToHotelDto(hotel);
     }
 
     @Override
-    public Optional<Hotel> findHotelModelById(Long id) {
+    public Optional<Hotel> findHotelById(Long id) {
         return hotelRepository.findById(id);
     }
 

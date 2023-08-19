@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 @Controller
 @RequestMapping("/booking")
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class BookingController {
             return "redirect:/search";
         }
 
-        HotelDTO hotelDTO = hotelService.findHotelById(bookingInitiationDTO.getHotelId());
+        HotelDTO hotelDTO = hotelService.findHotelDtoById(bookingInitiationDTO.getHotelId());
 
         model.addAttribute("bookingInitiationDTO", bookingInitiationDTO);
         model.addAttribute("hotelDTO", hotelDTO);
@@ -70,7 +69,7 @@ public class BookingController {
 
         if (result.hasErrors()) {
             log.warn("Validation errors occurred while completing booking");
-            HotelDTO hotelDTO = hotelService.findHotelById(bookingInitiationDTO.getHotelId());
+            HotelDTO hotelDTO = hotelService.findHotelDtoById(bookingInitiationDTO.getHotelId());
             model.addAttribute("bookingInitiationDTO", bookingInitiationDTO);
             model.addAttribute("hotelDTO", hotelDTO);
             model.addAttribute("paymentCardDTO", paymentDTO);
@@ -80,7 +79,7 @@ public class BookingController {
         try {
             // Save to the database
             Long userId = getLoggedInUserId();
-            bookingService.saveBooking(bookingInitiationDTO, userId);
+            bookingService.confirmBooking(bookingInitiationDTO, userId);
 
             return "/booking/confirmation";
         } catch (Exception e) {

@@ -1,9 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.service.impl;
 
-import edu.sabanciuniv.hotelbookingapp.model.BookedRoom;
-import edu.sabanciuniv.hotelbookingapp.model.Booking;
-import edu.sabanciuniv.hotelbookingapp.model.Customer;
-import edu.sabanciuniv.hotelbookingapp.model.Hotel;
+import edu.sabanciuniv.hotelbookingapp.model.*;
 import edu.sabanciuniv.hotelbookingapp.model.dto.BookingDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.BookingInitiationDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomSelectionDTO;
@@ -32,30 +29,27 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public Booking saveBooking(BookingInitiationDTO bookingInitiationDTO, Long userId) {
-        // Validate the booking dates
         validateBookingDates(bookingInitiationDTO.getCheckinDate(), bookingInitiationDTO.getCheckoutDate());
 
-        // Retrieve the customer from the database
         Customer customer = customerService.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException("Customer not found with user ID: " + userId));
 
-        // Retrieve the hotel from the database
-        Hotel hotel = hotelService.findHotelModelById(bookingInitiationDTO.getHotelId())
+        Hotel hotel = hotelService.findHotelById(bookingInitiationDTO.getHotelId())
                 .orElseThrow(() -> new EntityNotFoundException("Hotel not found with ID: " + bookingInitiationDTO.getHotelId()));
 
-        // Map the DTO to the Booking entity
         Booking booking = mapBookingInitDtoToBookingModel(bookingInitiationDTO, customer, hotel);
 
-        // Save the booking
         return bookingRepository.save(booking);
     }
 
     @Override
     @Transactional
-    public BookingDTO confirmBooking() {
-        // Create a booking entry and save
-        // Create a payment entry and save
-        // Update/save the availability of the selected hotel's rooms
+    public BookingDTO confirmBooking(BookingInitiationDTO bookingInitiationDTO, Long customerId) {
+        Booking savedBooking = this.saveBooking(bookingInitiationDTO, customerId);
+        Payment savedPayment = paymentService.savePayment(bookingInitiationDTO, savedBooking);
+        savedBooking.setPayment(savedPayment);
+        bookingRepository.save(savedBooking);
+        // Step 3: Update/save the availability of the selected hotel's rooms
         return null;
     }
 
@@ -76,15 +70,15 @@ public class BookingServiceImpl implements BookingService {
                 .checkoutDate(bookingInitiationDTO.getCheckoutDate())
                 .build();
 
-        // Map the room selections
         for (RoomSelectionDTO roomSelection : bookingInitiationDTO.getRoomSelections()) {
-            BookedRoom bookedRoom = BookedRoom.builder()
-                    .booking(booking)
-                    .roomType(roomSelection.getRoomType())
-                    .count(roomSelection.getCount())
-                    .build();
-
-            booking.getBookedRooms().add(bookedRoom);
+            if (roomSelection.getCount() > 0) {
+                BookedRoom bookedRoom = BookedRoom.builder()
+                        .booking(booking)
+                        .roomType(roomSelection.getRoomType())
+                        .count(roomSelection.getCount())
+                        .build();
+                booking.getBookedRooms().add(bookedRoom);
+            }
         }
 
         return booking;

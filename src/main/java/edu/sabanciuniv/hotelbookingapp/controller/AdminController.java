@@ -75,7 +75,7 @@ public class AdminController {
 
     @GetMapping("/hotels/edit/{id}")
     public String showEditHotelForm(@PathVariable Long id, Model model) {
-        HotelDTO hotelDTO = hotelService.findHotelById(id);
+        HotelDTO hotelDTO = hotelService.findHotelDtoById(id);
         model.addAttribute("hotel", hotelDTO);
         return "admin/hotels-edit";
     }

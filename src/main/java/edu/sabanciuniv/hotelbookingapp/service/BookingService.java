@@ -8,6 +8,6 @@ public interface BookingService {
 
     Booking saveBooking(BookingInitiationDTO bookingInitiationDTO, Long customerId);
 
-    BookingDTO confirmBooking();
+    BookingDTO confirmBooking(BookingInitiationDTO bookingInitiationDTO, Long customerId);
 
 }

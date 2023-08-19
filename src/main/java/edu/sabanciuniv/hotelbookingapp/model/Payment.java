@@ -8,7 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -24,12 +24,11 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(unique = true, nullable = false)
-    private UUID transactionId;
+    private String transactionId;
 
     @CreationTimestamp
-    private LocalDate paymentDate;
+    private LocalDateTime paymentDate;
 
     @OneToOne
     @JoinColumn(nullable = false)
@@ -44,11 +43,16 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private PaymentMethod paymentMethod = PaymentMethod.CREDIT_CARD; // Default to CREDIT_CARD
+    private PaymentMethod paymentMethod;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Currency currency = Currency.USD; // Default to USD
+    private Currency currency;
+
+    @PrePersist
+    protected void onCreate() {
+        this.transactionId = UUID.randomUUID().toString();
+    }
 
     @Override
     public String toString() {
@@ -76,4 +80,5 @@ public class Payment {
     public int hashCode() {
         return Objects.hash(id, transactionId);
     }
+
 }
