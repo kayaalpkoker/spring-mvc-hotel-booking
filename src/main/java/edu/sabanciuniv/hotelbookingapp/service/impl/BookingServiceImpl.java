@@ -50,6 +50,11 @@ public class BookingServiceImpl implements BookingService {
         savedBooking.setPayment(savedPayment);
         bookingRepository.save(savedBooking);
         // Step 3: Update/save the availability of the selected hotel's rooms
+        availabilityService.updateAvailabilities(
+                bookingInitiationDTO.getHotelId(),
+                bookingInitiationDTO.getCheckinDate(),
+                bookingInitiationDTO.getCheckoutDate(),
+                bookingInitiationDTO.getRoomSelections());
         return null;
     }
 
