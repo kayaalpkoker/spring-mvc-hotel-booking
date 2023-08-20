@@ -50,7 +50,7 @@
                                 <span th:if="${room.roomType.name() == 'DOUBLE'}"><i class="bi-person-fill"></i><i
                                         class="bi-person-fill"></i></span>
                             </td>
-                            <td th:text="'$ ' + ${room.pricePerNight * durationDays}">Price</td>
+                            <td th:utext="'$ ' + ${#numbers.formatDecimal(room.pricePerNight * durationDays, 0, 'COMMA', 2, 'POINT')}">Price</td>
                             <td>
                                 <select class="form-select room-select"
                                         th:data-duration-price="${room.pricePerNight * durationDays}">
@@ -110,6 +110,11 @@
                 });
             }
 
+            // Function to format the price with two decimal places and thousand separators
+            function formatPrice(price) {
+                return '$ ' + price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
             // Calculate the total cost
             function calculateTotal() {
                 let total = 0;
@@ -119,7 +124,7 @@
                     total += roomDurationPrice * roomCount;
                 });
 
-                $("#totalPrice").text("$" + total.toFixed(2));
+                $("#totalPrice").text(formatPrice(total));
                 $("#totalPriceInput").val(total.toFixed(2));
 
                 if (total === 0) {

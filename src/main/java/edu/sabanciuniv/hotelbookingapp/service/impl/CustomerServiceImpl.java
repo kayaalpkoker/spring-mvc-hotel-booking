@@ -18,6 +18,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Optional<Customer> findByUserId(Long userId) {
-        return Optional.ofNullable(customerRepository.findByUserId(userId));
+        return customerRepository.findByUserId(userId);
     }
+
+    @Override
+    public Optional<Customer> findByUsername(String username) {
+        return customerRepository.findByUsername(username);
+    }
+
 }

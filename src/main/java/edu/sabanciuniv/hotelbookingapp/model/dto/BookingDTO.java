@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class BookingDTO {
 
     private Long id;
     private String confirmationNumber;
-    private LocalDate bookingDate;
+    private LocalDateTime bookingDate;
     private Long customerId;
     private Long hotelId;
     private LocalDate checkinDate;

@@ -1,9 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
-import edu.sabanciuniv.hotelbookingapp.model.dto.BookingInitiationDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.PaymentCardDTO;
-import edu.sabanciuniv.hotelbookingapp.model.dto.UserDTO;
+import edu.sabanciuniv.hotelbookingapp.model.dto.*;
 import edu.sabanciuniv.hotelbookingapp.service.BookingService;
 import edu.sabanciuniv.hotelbookingapp.service.HotelService;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
@@ -21,6 +18,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Controller
 @RequestMapping("/booking")
@@ -77,9 +77,9 @@ public class BookingController {
         }
 
         try {
-            // Save to the database
             Long userId = getLoggedInUserId();
-            bookingService.confirmBooking(bookingInitiationDTO, userId);
+            BookingDTO bookingDTO = bookingService.confirmBooking(bookingInitiationDTO, userId);
+            redirectAttributes.addFlashAttribute("bookingDTO", bookingDTO);
 
             return "redirect:/booking/confirmation";
         } catch (Exception e) {
@@ -87,6 +87,26 @@ public class BookingController {
             redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
             return "redirect:/booking/payment";
         }
+    }
+
+    @GetMapping("/confirmation")
+    public String showConfirmationPage(Model model, RedirectAttributes redirectAttributes) {
+        // Attempt to retrieve the bookingDTO from flash attributes
+        BookingDTO bookingDTO = (BookingDTO) model.asMap().get("bookingDTO");
+
+        if (bookingDTO == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Your session has expired or the booking process was not completed properly. Please start a new search.");
+            return "redirect:/search";
+        }
+
+        LocalDate checkinDate = bookingDTO.getCheckinDate();
+        LocalDate checkoutDate = bookingDTO.getCheckoutDate();
+        long durationDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+
+        model.addAttribute("days", durationDays);
+        model.addAttribute("bookingDTO", bookingDTO);
+
+        return "booking/confirmation";
     }
 
     private Long getLoggedInUserId() {

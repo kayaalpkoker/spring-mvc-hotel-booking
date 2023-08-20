@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,6 +58,12 @@ public class BookingServiceImpl implements BookingService {
         return mapBookingModelToBookingDto(savedBooking);
     }
 
+    @Override
+    public Optional<BookingDTO> findBookingByIdAndUsername(Long bookingId, String username) {
+        return bookingRepository.findBookingByIdAndUsername(bookingId, username)
+                .map(this::mapBookingModelToBookingDto);
+    }
+
     private void validateBookingDates(LocalDate checkinDate, LocalDate checkoutDate) {
         if (checkinDate.isBefore(LocalDate.now())) {
             throw new IllegalArgumentException("Check-in date cannot be in the past");
@@ -64,6 +71,42 @@ public class BookingServiceImpl implements BookingService {
         if (checkoutDate.isBefore(checkinDate.plusDays(1))) {
             throw new IllegalArgumentException("Check-out date must be after check-in date");
         }
+    }
+
+    @Override
+    public BookingDTO mapBookingModelToBookingDto(Booking booking) {
+        AddressDTO addressDto = AddressDTO.builder()
+                .addressLine(booking.getHotel().getAddress().getAddressLine())
+                .city(booking.getHotel().getAddress().getCity())
+                .country(booking.getHotel().getAddress().getCountry())
+                .build();
+
+        List<RoomSelectionDTO> roomSelections = booking.getBookedRooms().stream()
+                .map(room -> RoomSelectionDTO.builder()
+                        .roomType(room.getRoomType())
+                        .count(room.getCount())
+                        .build())
+                .collect(Collectors.toList());
+
+        User customerUser = booking.getCustomer().getUser();
+
+        return BookingDTO.builder()
+                .id(booking.getId())
+                .confirmationNumber(booking.getConfirmationNumber())
+                .bookingDate(booking.getBookingDate())
+                .customerId(booking.getCustomer().getId())
+                .hotelId(booking.getHotel().getId())
+                .checkinDate(booking.getCheckinDate())
+                .checkoutDate(booking.getCheckoutDate())
+                .roomSelections(roomSelections)
+                .totalPrice(booking.getPayment().getTotalPrice())
+                .hotelName(booking.getHotel().getName())
+                .hotelAddress(addressDto)
+                .customerName(customerUser.getName() + " " + customerUser.getLastName())
+                .customerEmail(customerUser.getUsername())
+                .paymentStatus(booking.getPayment().getPaymentStatus())
+                .paymentMethod(booking.getPayment().getPaymentMethod())
+                .build();
     }
 
     private Booking mapBookingInitDtoToBookingModel(BookingInitiationDTO bookingInitiationDTO, Customer customer, Hotel hotel) {
@@ -86,41 +129,6 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return booking;
-    }
-
-    private BookingDTO mapBookingModelToBookingDto(Booking booking) {
-        AddressDTO addressDto = AddressDTO.builder()
-                .addressLine(booking.getHotel().getAddress().getAddressLine())
-                .city(booking.getHotel().getAddress().getCity())
-                .country(booking.getHotel().getAddress().getCountry())
-                .build();
-
-        List<RoomSelectionDTO> roomSelections = booking.getBookedRooms().stream()
-                .map(room -> RoomSelectionDTO.builder()
-                        .roomType(room.getRoomType())
-                        .count(room.getCount())
-                        .build())
-                .collect(Collectors.toList());
-
-        User customerUser = booking.getCustomer().getUser();
-
-        return BookingDTO.builder()
-                .id(booking.getId())
-                .confirmationNumber(booking.getConfirmationNumber())
-                .bookingDate(booking.getBookingDate().toLocalDate())
-                .customerId(booking.getCustomer().getId())
-                .hotelId(booking.getHotel().getId())
-                .checkinDate(booking.getCheckinDate())
-                .checkoutDate(booking.getCheckoutDate())
-                .roomSelections(roomSelections)
-                .totalPrice(booking.getPayment().getTotalPrice())
-                .hotelName(booking.getHotel().getName())
-                .hotelAddress(addressDto)
-                .customerName(customerUser.getName() + " " + customerUser.getLastName())
-                .customerEmail(customerUser.getUsername())
-                .paymentStatus(booking.getPayment().getPaymentStatus())
-                .paymentMethod(booking.getPayment().getPaymentMethod())
-                .build();
     }
 
 }
