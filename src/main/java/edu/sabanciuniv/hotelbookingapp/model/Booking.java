@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -21,6 +22,9 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String confirmationNumber;
 
     @CreationTimestamp
     private LocalDateTime bookingDate;
@@ -46,10 +50,16 @@ public class Booking {
     @OneToOne(mappedBy = "booking")
     private Payment payment;
 
+    @PrePersist
+    protected void onCreate() {
+        this.confirmationNumber = UUID.randomUUID().toString().substring(0, 8);
+    }
+
     @Override
     public String toString() {
         return "Booking{" +
                 "id=" + id +
+                ", confirmationNumber='" + confirmationNumber + '\'' +
                 ", bookingDate=" + bookingDate +
                 ", customer=" + customer +
                 ", hotel=" + hotel +
@@ -65,11 +75,11 @@ public class Booking {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Booking booking = (Booking) o;
-        return Objects.equals(id, booking.id) && Objects.equals(bookingDate, booking.bookingDate) && Objects.equals(customer, booking.customer);
+        return Objects.equals(id, booking.id) && Objects.equals(confirmationNumber, booking.confirmationNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookingDate, customer);
+        return Objects.hash(id, confirmationNumber);
     }
 }

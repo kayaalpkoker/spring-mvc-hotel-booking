@@ -33,7 +33,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping("/initiate")
-    public String initiateBooking(@ModelAttribute BookingInitiationDTO bookingInitiationDTO, RedirectAttributes redirectAttributes, HttpSession session) {
+    public String initiateBooking(@ModelAttribute BookingInitiationDTO bookingInitiationDTO, HttpSession session) {
         session.setAttribute("bookingInitiationDTO", bookingInitiationDTO);
         log.debug("BookingInitiationDTO set in session: {}", bookingInitiationDTO);
         return "redirect:/booking/payment";
@@ -81,11 +81,11 @@ public class BookingController {
             Long userId = getLoggedInUserId();
             bookingService.confirmBooking(bookingInitiationDTO, userId);
 
-            return "/booking/confirmation";
+            return "redirect:/booking/confirmation";
         } catch (Exception e) {
             log.error("An error occurred while completing the booking", e);
             redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
-            return "redirect:/booking/payment"; // Redirect back to the payment page
+            return "redirect:/booking/payment";
         }
     }
 

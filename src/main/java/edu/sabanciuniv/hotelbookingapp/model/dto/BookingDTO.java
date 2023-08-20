@@ -1,5 +1,7 @@
 package edu.sabanciuniv.hotelbookingapp.model.dto;
 
+import edu.sabanciuniv.hotelbookingapp.model.enums.PaymentMethod;
+import edu.sabanciuniv.hotelbookingapp.model.enums.PaymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 public class BookingDTO {
 
-    // TODO: 14.08.2023
     private Long id;
+    private String confirmationNumber;
     private LocalDate bookingDate;
     private Long customerId;
     private Long hotelId;
@@ -26,7 +28,10 @@ public class BookingDTO {
     private List<RoomSelectionDTO> roomSelections = new ArrayList<>();
     private BigDecimal totalPrice;
     private String hotelName;
+    private AddressDTO hotelAddress;
     private String customerName;
     private String customerEmail;
+    private PaymentStatus paymentStatus;
+    private PaymentMethod paymentMethod;
     
 }
