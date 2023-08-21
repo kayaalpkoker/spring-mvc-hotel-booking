@@ -12,6 +12,10 @@ public interface BookingService {
 
     BookingDTO confirmBooking(BookingInitiationDTO bookingInitiationDTO, Long customerId);
 
+    List<BookingDTO> findAllBookings();
+
+    BookingDTO findBookingById(Long bookingId);
+
     List<BookingDTO> findBookingsByCustomerId(Long customerId);
 
     BookingDTO findBookingByIdAndCustomerId(Long bookingId, Long customerId);

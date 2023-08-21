@@ -59,6 +59,21 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    public List<BookingDTO> findAllBookings() {
+        List<Booking> bookings = bookingRepository.findAll();
+        return bookings.stream()
+                .map(this::mapBookingModelToBookingDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookingDTO findBookingById(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
+        return mapBookingModelToBookingDto(booking);
+    }
+
+    @Override
     public List<BookingDTO> findBookingsByCustomerId(Long customerId) {
         List<Booking> bookingDTOs = bookingRepository.findBookingsByCustomerId(customerId);
         return bookingDTOs.stream()
