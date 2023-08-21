@@ -26,18 +26,21 @@
                 <li class="nav-item" sec:authorize="isAnonymous()">
                     <a class="nav-link" th:href="@{/login}">Login</a>
                 </li>
-                <!-- Admin links -->
+                <!-- Admin -->
                 <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" th:href="@{/admin/dashboard}">Dashboard</a>
                 </li>
-                <!-- Customer links -->
+                <!-- Customer -->
                 <li class="nav-item" sec:authorize="hasRole('ROLE_CUSTOMER')">
                     <a class="nav-link" th:href="@{/search}">Search Hotels</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ROLE_CUSTOMER')">
+                    <a class="nav-link" th:href="@{/customer/bookings}">Bookings</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ROLE_CUSTOMER')">
                     <a class="nav-link" th:href="@{/customer/account}">My Account</a>
                 </li>
-                <!-- Hotel Manager links -->
+                <!-- Hotel Manager -->
                 <li class="nav-item" sec:authorize="hasRole('ROLE_HOTEL_MANAGER')">
                     <a class="nav-link" th:href="@{/manager/dashboard}">Dashboard</a>
                 </li>

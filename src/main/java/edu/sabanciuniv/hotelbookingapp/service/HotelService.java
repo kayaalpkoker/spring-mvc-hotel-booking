@@ -23,7 +23,9 @@ public interface HotelService {
 
     void deleteHotelById(Long id);
 
-    List<HotelDTO> findAllHotelsByManagerId(Long managerId);
+    List<Hotel> findAllHotelsByManagerId(Long managerId);
+
+    List<HotelDTO> findAllHotelDtosByManagerId(Long managerId);
 
     HotelDTO findHotelByIdAndManagerId(Long hotelId, Long managerId);
 

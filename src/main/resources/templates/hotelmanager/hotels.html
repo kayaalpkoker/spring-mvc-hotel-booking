@@ -19,8 +19,8 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Single Room Price ($)</th>
-                        <th>Double Room Price ($)</th>
+                        <th>Single Room Price</th>
+                        <th>Double Room Price</th>
                         <th>Edit</th>
                         <th>Delete</th>
                     </tr>
@@ -29,8 +29,8 @@
                     <tr class="align-middle" th:each="hotel : ${hotels}">
                         <td th:text="${hotel.id}"></td>
                         <td th:text="${hotel.name}"></td>
-                        <td th:each="room : ${hotel.roomDTOs}" th:if="${room.roomType.name() == 'SINGLE'}" th:text="${room.pricePerNight}"></td>
-                        <td th:each="room : ${hotel.roomDTOs}" th:if="${room.roomType.name() == 'DOUBLE'}" th:text="${room.pricePerNight}"></td>
+                        <td th:each="room : ${hotel.roomDTOs}" th:if="${room.roomType.name() == 'SINGLE'}" th:text="'$ ' + ${#numbers.formatDecimal(room.pricePerNight, 1, 'COMMA', 2, 'POINT')}"></td>
+                        <td th:each="room : ${hotel.roomDTOs}" th:if="${room.roomType.name() == 'DOUBLE'}" th:text="'$ ' + ${#numbers.formatDecimal(room.pricePerNight, 1, 'COMMA', 2, 'POINT')}"></td>
                         <td>
                             <a th:href="@{/manager/hotels/edit/{id}(id=${hotel.id})}">Edit</a>
                         </td>

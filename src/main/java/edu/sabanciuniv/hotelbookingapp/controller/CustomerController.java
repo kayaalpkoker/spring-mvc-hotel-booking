@@ -1,10 +1,8 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
-import edu.sabanciuniv.hotelbookingapp.model.Booking;
-import edu.sabanciuniv.hotelbookingapp.model.Customer;
 import edu.sabanciuniv.hotelbookingapp.model.dto.BookingDTO;
 import edu.sabanciuniv.hotelbookingapp.service.BookingService;
-import edu.sabanciuniv.hotelbookingapp.service.CustomerService;
+import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/customer")
@@ -29,7 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final UserService userService;
     private final BookingService bookingService;
 
     @GetMapping("/dashboard")
@@ -40,22 +35,12 @@ public class CustomerController {
     @GetMapping("/bookings")
     public String listBookings(Model model, RedirectAttributes redirectAttributes) {
         try {
-            String username = getCurrentUsername();
-            Optional<Customer> customerOptional = customerService.findByUsername(username);
-
-            if (customerOptional.isPresent()) {
-                List<Booking> bookings = customerOptional.get().getBookingList();
-                List<BookingDTO> bookingDTOs = bookings.stream()
-                        .map(bookingService::mapBookingModelToBookingDto)
-                        .sorted(Comparator.comparing(BookingDTO::getCheckinDate)) // Sort by check-in date in ascending order
-                        .collect(Collectors.toList());
-                model.addAttribute("bookings", bookingDTOs);
-                return "customer/bookings";
-            } else {
-                throw new EntityNotFoundException("Customer not found with username: " + username);
-            }
+            Long customerId = getCurrentCustomerId();
+            List<BookingDTO> bookingDTOs = bookingService.findBookingsByCustomerId(customerId);
+            model.addAttribute("bookings", bookingDTOs);
+            return "customer/bookings";
         } catch (EntityNotFoundException e) {
-            log.error("No customer found with the provided username", e);
+            log.error("No customer found with the provided ID", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Customer not found. Please log in again.");
             return "redirect:/login";
         } catch (Exception e) {
@@ -68,23 +53,16 @@ public class CustomerController {
     @GetMapping("/bookings/{id}")
     public String viewBookingDetails(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         try {
-            String username = getCurrentUsername();
-            Optional<BookingDTO> bookingOptional = bookingService.findBookingByIdAndUsername(id, username);
+            Long customerId = getCurrentCustomerId();
+            BookingDTO bookingDTO = bookingService.findBookingByIdAndCustomerId(id, customerId);
+            model.addAttribute("bookingDTO", bookingDTO);
 
-            if (bookingOptional.isPresent()) {
-                BookingDTO bookingDTO = bookingOptional.get();
-                model.addAttribute("bookingDTO", bookingDTO);
+            LocalDate checkinDate = bookingDTO.getCheckinDate();
+            LocalDate checkoutDate = bookingDTO.getCheckoutDate();
+            long durationDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+            model.addAttribute("days", durationDays);
 
-                LocalDate checkinDate = bookingDTO.getCheckinDate();
-                LocalDate checkoutDate = bookingDTO.getCheckoutDate();
-                long durationDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
-
-                model.addAttribute("days", durationDays);
-
-                return "customer/bookings-details";
-            } else {
-                throw new EntityNotFoundException("Booking not found with id: " + id);
-            }
+            return "customer/bookings-details";
         } catch (EntityNotFoundException e) {
             log.error("No booking found with the provided ID", e);
             redirectAttributes.addFlashAttribute("errorMessage", "Booking not found. Please try again later.");
@@ -96,9 +74,9 @@ public class CustomerController {
         }
     }
 
-    private String getCurrentUsername() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+    private Long getCurrentCustomerId() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userService.findUserByUsername(username).getCustomer().getId();
     }
 
 }
-

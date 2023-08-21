@@ -54,7 +54,7 @@
                             <p class="text-danger" th:if="${#fields.hasErrors('roomDTOs[0].roomCount')}"
                                th:errors="*{roomDTOs[0].roomCount}"></p>
 
-                            <label class="form-label" for="singleRoomPrice">Single Room Price:</label>
+                            <label class="form-label" for="singleRoomPrice">Single Room Price ($):</label>
                             <input class="form-control" id="singleRoomPrice" type="number" step="0.01"
                                    th:field="*{roomDTOs[0].pricePerNight}"
                                    placeholder="Enter price for single rooms">
@@ -71,7 +71,7 @@
                             <input type="hidden" th:field="*{roomDTOs[1].roomType}">
                             <p class="text-danger" th:if="${#fields.hasErrors('roomDTOs[1].roomCount')}"
                                th:errors="*{roomDTOs[1].roomCount}"></p>
-                            <label class="form-label" for="doubleRoomPrice">Double Room Price:</label>
+                            <label class="form-label" for="doubleRoomPrice">Double Room Price ($):</label>
                             <input class="form-control" id="doubleRoomPrice" type="number" step="0.01"
                                    th:field="*{roomDTOs[1].pricePerNight}"
                                    placeholder="Enter price for double rooms">

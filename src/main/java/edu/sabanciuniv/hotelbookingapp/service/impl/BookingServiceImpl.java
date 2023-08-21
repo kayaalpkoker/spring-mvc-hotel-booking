@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,9 +59,35 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Optional<BookingDTO> findBookingByIdAndUsername(Long bookingId, String username) {
-        return bookingRepository.findBookingByIdAndUsername(bookingId, username)
-                .map(this::mapBookingModelToBookingDto);
+    public List<BookingDTO> findBookingsByCustomerId(Long customerId) {
+        List<Booking> bookingDTOs = bookingRepository.findBookingsByCustomerId(customerId);
+        return bookingDTOs.stream()
+                .map(this::mapBookingModelToBookingDto)
+                .sorted(Comparator.comparing(BookingDTO::getCheckinDate))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookingDTO findBookingByIdAndCustomerId(Long bookingId, Long customerId) {
+        Booking booking = bookingRepository.findBookingByIdAndCustomerId(bookingId, customerId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId));
+        return mapBookingModelToBookingDto(booking);
+    }
+
+    @Override
+    public List<BookingDTO> findBookingsByManagerId(Long managerId) {
+        List<Hotel> hotels = hotelService.findAllHotelsByManagerId(managerId);
+        return hotels.stream()
+                .flatMap(hotel -> bookingRepository.findBookingsByHotelId(hotel.getId()).stream())
+                .map(this::mapBookingModelToBookingDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public BookingDTO findBookingByIdAndManagerId(Long bookingId, Long managerId) {
+        Booking booking = bookingRepository.findBookingByIdAndHotel_HotelManagerId(bookingId, managerId)
+                .orElseThrow(() -> new EntityNotFoundException("Booking not found with ID: " + bookingId + " and manager ID: " + managerId));
+        return mapBookingModelToBookingDto(booking);
     }
 
     private void validateBookingDates(LocalDate checkinDate, LocalDate checkoutDate) {

@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -117,13 +118,21 @@ public class HotelServiceImpl implements HotelService {
         hotelRepository.deleteById(id);
         log.info("Successfully deleted hotel with ID: {}", id);
     }
+    @Override
+    public List<Hotel> findAllHotelsByManagerId(Long managerId) {
+        List<Hotel> hotels = hotelRepository.findAllByHotelManager_Id(managerId);
+        return (hotels != null) ? hotels : Collections.emptyList();
+    }
 
     @Override
-    public List<HotelDTO> findAllHotelsByManagerId(Long managerId) {
+    public List<HotelDTO> findAllHotelDtosByManagerId(Long managerId) {
         List<Hotel> hotels = hotelRepository.findAllByHotelManager_Id(managerId);
-        return hotels.stream()
-                .map(this::mapHotelToHotelDto)
-                .collect(Collectors.toList());
+        if (hotels != null) {
+            return hotels.stream()
+                    .map(this::mapHotelToHotelDto)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
     @Override

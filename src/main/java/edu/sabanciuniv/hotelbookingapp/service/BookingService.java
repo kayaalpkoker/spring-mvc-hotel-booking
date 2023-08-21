@@ -4,7 +4,7 @@ import edu.sabanciuniv.hotelbookingapp.model.Booking;
 import edu.sabanciuniv.hotelbookingapp.model.dto.BookingDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.BookingInitiationDTO;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface BookingService {
 
@@ -12,7 +12,13 @@ public interface BookingService {
 
     BookingDTO confirmBooking(BookingInitiationDTO bookingInitiationDTO, Long customerId);
 
-    Optional<BookingDTO> findBookingByIdAndUsername(Long bookingId, String username);
+    List<BookingDTO> findBookingsByCustomerId(Long customerId);
+
+    BookingDTO findBookingByIdAndCustomerId(Long bookingId, Long customerId);
+
+    List<BookingDTO> findBookingsByManagerId(Long managerId);
+
+    BookingDTO findBookingByIdAndManagerId(Long bookingId, Long managerId);
 
     BookingDTO mapBookingModelToBookingDto(Booking booking);
 
