@@ -3,6 +3,8 @@ package edu.sabanciuniv.hotelbookingapp.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Entity
 @Getter
 @Setter
@@ -24,4 +26,26 @@ public class Address {
     @Column(nullable = false)
     private String country;
 
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", addressLine='" + addressLine + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(id, address.id) && Objects.equals(addressLine, address.addressLine);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, addressLine);
+    }
 }

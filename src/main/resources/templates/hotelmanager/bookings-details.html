@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
+<head>
+    <title>Booking Details</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>Booking Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <h5>Confirmation Number:</h5>
+                        <p class="mb-3" th:text="${bookingDTO.confirmationNumber}"></p>
+                        <hr>
+                        <h3 class="mb-2" th:text="${bookingDTO.hotelName}">Hotel</h3>
+                        <p class="small mb-4" th:text="${bookingDTO.hotelAddress.addressLine + ', ' + bookingDTO.hotelAddress.city + ', ' + bookingDTO.hotelAddress.country}"></p>
+                        <div class="row text-center my-5">
+                            <div class="col-md-4">
+                                <h5>Check-in</h5>
+                                <p th:text="${bookingDTO.checkinDate}"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <h5>Check-out</h5>
+                                <p th:text="${bookingDTO.checkoutDate}"></p>
+                            </div>
+                            <div class="col-md-4">
+                                <h5>Duration</h5>
+                                <p th:text="${days} + ' night(s)'"></p>
+                            </div>
+                        </div>
+                        <h5>Rooms:</h5>
+                        <ul class="mb-3">
+                            <li th:each="room : ${bookingDTO.roomSelections}">
+                                <span th:text="${room.count}"></span> x <span th:text="${room.roomType}"></span>
+                            </li>
+                        </ul>
+                        <hr>
+                        <h3>Total Price:</h3>
+                        <p class="mb-3" th:text="'$ ' + ${#numbers.formatDecimal(bookingDTO.totalPrice, 1, 'COMMA', 2, 'POINT')}"></p>
+                        <h5 class="small">Payment Method:</h5>
+                        <p class="small mb-3" th:text="${bookingDTO.paymentMethod}"></p>
+                        <hr>
+                        <h5>Guest Details:</h5>
+                        <p class="mb-2">Name: <span th:text="${bookingDTO.customerName}"></span></p>
+                        <p class="mb-3">Email: <span th:text="${bookingDTO.customerEmail}"></span></p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <a href="/manager/bookings" class="btn btn-primary">Back to Bookings</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

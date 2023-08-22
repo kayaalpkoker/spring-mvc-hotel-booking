@@ -7,9 +7,9 @@ public interface AddressService {
 
     Address saveAddress(AddressDTO addressDTO);
 
-    Address updateAddress(AddressDTO addressDTO);
-
     AddressDTO findAddressById(Long id);
+
+    Address updateAddress(AddressDTO addressDTO);
 
     void deleteAddress(Long id);
 

@@ -43,7 +43,7 @@ public class HotelSearchController {
             return "hotelsearch/search";
         }
 
-        // Redirect to a new endpoint with parameters. The actual data fetching will now take place in the GET endpoint.
+        // Redirect to a new GET endpoint with parameters for data fetching. Allows page refreshing
         return String.format("redirect:/search-results?city=%s&checkinDate=%s&checkoutDate=%s", hotelSearchDTO.getCity(), hotelSearchDTO.getCheckinDate(), hotelSearchDTO.getCheckoutDate());
     }
 
@@ -52,20 +52,21 @@ public class HotelSearchController {
         try {
             LocalDate parsedCheckinDate = LocalDate.parse(checkinDate);
             LocalDate parsedCheckoutDate = LocalDate.parse(checkoutDate);
+
             validateCheckinAndCheckoutDates(parsedCheckinDate, parsedCheckoutDate);
 
             log.info("Searching hotels for city {} between dates {} and {}", city, checkinDate, checkoutDate);
-
-            List<HotelAvailabilityDTO> hotels = hotelSearchService.findAvailableHotelsByCityAndDate(city, LocalDate.parse(checkinDate), LocalDate.parse(checkoutDate));
-            long days = ChronoUnit.DAYS.between(LocalDate.parse(checkinDate), LocalDate.parse(checkoutDate));
+            List<HotelAvailabilityDTO> hotels = hotelSearchService.findAvailableHotelsByCityAndDate(city, parsedCheckinDate, parsedCheckoutDate);
 
             if (hotels.isEmpty()) {
                 model.addAttribute("noHotelsFound", true);
             }
 
+            long durationDays = ChronoUnit.DAYS.between(parsedCheckinDate, parsedCheckoutDate);
+
             model.addAttribute("hotels", hotels);
-            model.addAttribute("days", days);
             model.addAttribute("city", city);
+            model.addAttribute("days", durationDays);
             model.addAttribute("checkinDate", checkinDate);
             model.addAttribute("checkoutDate", checkoutDate);
 
@@ -89,20 +90,38 @@ public class HotelSearchController {
     @GetMapping("/hotel-details/{id}")
     public String showHotelDetails(@PathVariable Long id, @RequestParam String checkinDate, @RequestParam String checkoutDate, Model model, RedirectAttributes redirectAttributes) {
         try {
-            HotelAvailabilityDTO hotelAvailabilityDTO = hotelSearchService.findAvailableHotelById(id, LocalDate.parse(checkinDate), LocalDate.parse(checkoutDate));
+            LocalDate parsedCheckinDate = LocalDate.parse(checkinDate);
+            LocalDate parsedCheckoutDate = LocalDate.parse(checkoutDate);
+
+            validateCheckinAndCheckoutDates(parsedCheckinDate, parsedCheckoutDate);
+
+            HotelAvailabilityDTO hotelAvailabilityDTO = hotelSearchService.findAvailableHotelById(id, parsedCheckinDate, parsedCheckoutDate);
+
+            long durationDays = ChronoUnit.DAYS.between(parsedCheckinDate, parsedCheckoutDate);
 
             model.addAttribute("hotel", hotelAvailabilityDTO);
+            model.addAttribute("durationDays", durationDays);
             model.addAttribute("checkinDate", checkinDate);
             model.addAttribute("checkoutDate", checkoutDate);
 
             return "hotelsearch/hotel-details";
+
+
+        } catch (DateTimeParseException e) {
+            log.error("Invalid date format provided", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Invalid date format. Please use the search form.");
+            return "redirect:/search";
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid arguments provided for URL search", e);
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/search";
         } catch (EntityNotFoundException e) {
             log.error("No hotel found with ID {}", id);
             redirectAttributes.addFlashAttribute("errorMessage", "The selected hotel is no longer available. Please start a new search.");
             return "redirect:/search";
-        } catch (DateTimeParseException e) {
-            log.error("Invalid date format provided", e);
-            redirectAttributes.addFlashAttribute("errorMessage", "Invalid date format. Please use the search form.");
+        } catch (Exception e) {
+            log.error("An error occurred while searching for hotels", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
             return "redirect:/search";
         }
     }
@@ -114,6 +133,12 @@ public class HotelSearchController {
         if (checkoutDate.isBefore(checkinDate.plusDays(1))) {
             throw new IllegalArgumentException("Check-out date must be after check-in date");
         }
+    }
+
+    private void parseAndValidateBookingDates(String checkinDate, String checkoutDate) {
+        LocalDate parsedCheckinDate = LocalDate.parse(checkinDate);
+        LocalDate parsedCheckoutDate = LocalDate.parse(checkoutDate);
+        validateCheckinAndCheckoutDates(parsedCheckinDate, parsedCheckoutDate);
     }
 
 }

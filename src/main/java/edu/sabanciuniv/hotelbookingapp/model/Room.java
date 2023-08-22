@@ -1,7 +1,10 @@
 package edu.sabanciuniv.hotelbookingapp.model;
 
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -16,6 +19,7 @@ public class Room {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Hotel hotel;
 
     @Enumerated(EnumType.STRING)
@@ -25,4 +29,27 @@ public class Room {
 
     private double pricePerNight;
 
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", hotel=" + hotel +
+                ", roomType=" + roomType +
+                ", roomCount=" + roomCount +
+                ", pricePerNight=" + pricePerNight +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Room room = (Room) o;
+        return Objects.equals(id, room.id) && Objects.equals(hotel, room.hotel);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, hotel);
+    }
 }

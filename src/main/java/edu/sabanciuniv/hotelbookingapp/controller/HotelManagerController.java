@@ -1,10 +1,12 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
 import edu.sabanciuniv.hotelbookingapp.exception.HotelAlreadyExistsException;
-import edu.sabanciuniv.hotelbookingapp.model.RoomType;
+import edu.sabanciuniv.hotelbookingapp.model.dto.BookingDTO;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoomType;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.HotelRegistrationDTO;
 import edu.sabanciuniv.hotelbookingapp.model.dto.RoomDTO;
+import edu.sabanciuniv.hotelbookingapp.service.BookingService;
 import edu.sabanciuniv.hotelbookingapp.service.HotelService;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,6 +20,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Controller
@@ -28,6 +32,7 @@ public class HotelManagerController {
 
     private final HotelService hotelService;
     private final UserService userService;
+    private final BookingService bookingService;
 
     @GetMapping("/dashboard")
     public String dashboard() {
@@ -67,7 +72,7 @@ public class HotelManagerController {
     @GetMapping("/hotels")
     public String listHotels(Model model) {
         Long managerId = getCurrentManagerId();
-        List<HotelDTO> hotelList = hotelService.findAllHotelsByManagerId(managerId);
+        List<HotelDTO> hotelList = hotelService.findAllHotelDtosByManagerId(managerId);
         model.addAttribute("hotels", hotelList);
         return "hotelmanager/hotels";
     }
@@ -87,7 +92,7 @@ public class HotelManagerController {
         }
         try {
             Long managerId = getCurrentManagerId();
-            hotelDTO.setId(id); // set the id from the path variable
+            hotelDTO.setId(id);
             hotelService.updateHotelByManagerId(hotelDTO, managerId);
             redirectAttributes.addFlashAttribute("message", "Hotel (ID: " + id + ") updated successfully");
             return "redirect:/manager/hotels";
@@ -109,9 +114,46 @@ public class HotelManagerController {
     }
 
     @GetMapping("/bookings")
-    public String manageBookings() {
-        // TODO: 24.07.2023
-        return "hotelmanager/bookings";
+    public String listBookings(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Long managerId = getCurrentManagerId();
+            List<BookingDTO> bookingDTOs = bookingService.findBookingsByManagerId(managerId);
+            model.addAttribute("bookings", bookingDTOs);
+
+            return "hotelmanager/bookings";
+        } catch (EntityNotFoundException e) {
+            log.error("No bookings found for the provided manager ID", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Bookings not found. Please try again later.");
+            return "redirect:/manager/dashboard";
+        } catch (Exception e) {
+            log.error("An error occurred while listing bookings", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
+            return "redirect:/manager/dashboard";
+        }
+    }
+
+    @GetMapping("/bookings/{id}")
+    public String viewBookingDetails(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Long managerId = getCurrentManagerId();
+            BookingDTO bookingDTO = bookingService.findBookingByIdAndManagerId(id, managerId);
+            model.addAttribute("bookingDTO", bookingDTO);
+
+            LocalDate checkinDate = bookingDTO.getCheckinDate();
+            LocalDate checkoutDate = bookingDTO.getCheckoutDate();
+            long durationDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+            model.addAttribute("days", durationDays);
+
+            return "hotelmanager/bookings-details";
+        } catch (EntityNotFoundException e) {
+            log.error("No booking found with the provided ID", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "Booking not found. Please try again later.");
+            return "redirect:/manager/dashboard";
+        } catch (Exception e) {
+            log.error("An error occurred while displaying booking details", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "An unexpected error occurred. Please try again later.");
+            return "redirect:/manager/dashboard";
+        }
     }
 
     private Long getCurrentManagerId() {

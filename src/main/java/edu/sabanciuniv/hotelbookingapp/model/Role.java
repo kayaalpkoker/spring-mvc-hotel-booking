@@ -1,5 +1,6 @@
 package edu.sabanciuniv.hotelbookingapp.model;
 
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoleType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class Role {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private RoleType roleType;
 
     public Role(RoleType roleType) {

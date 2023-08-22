@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
+<head>
+    <title>Complete Payment</title>
+</head>
+<body>
+<th:block layout:fragment="content">
+    <div class="container">
+        <!-- Step Indicators -->
+        <div class="row">
+            <div class="col-md-6 text-center">
+                <i class="bi bi-check-circle-fill"></i> Your Selection
+            </div>
+            <div class="col-md-6 text-center">
+                <i class="bi bi-check-circle"></i> Complete Details
+            </div>
+        </div>
+        <hr>
+        <!-- Booking Details -->
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Hotel Details -->
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <p><strong th:text="${hotelDTO.name}">Hotel Name</strong></p>
+                        <p th:text="${hotelDTO.addressDTO.getAddressLine()}">Address Line</p>
+                        <p th:text="${hotelDTO.addressDTO.city + ', ' + hotelDTO.addressDTO.country}">City, Country</p>
+                    </div>
+                </div>
+                <!-- Check-in, Check-out & Duration -->
+                <div class="card mb-2">
+                    <div class="row card-body">
+                        <div class="col">
+                            <p><strong>Check-in</strong></p>
+                            <p th:text="${bookingInitiationDTO.checkinDate}"></p>
+                        </div>
+                        <div class="col">
+                            <p><strong>Check-out</strong></p>
+                            <p th:text="${bookingInitiationDTO.checkoutDate}"></p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Duration of stay:</strong></p>
+                        <p><span th:text="${bookingInitiationDTO.durationDays}">0></span> nights</p>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Selected rooms:</strong></p>
+                        <div th:each="roomSelection : ${bookingInitiationDTO.roomSelections}"
+                             th:if="${roomSelection.count > 0}">
+                            <p th:text="${roomSelection.count + ' x ' + roomSelection.roomType}">0 x Room</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Price and Payment Form -->
+            <div class="col-md-8">
+                <!-- Price Details -->
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <h4><strong>Total Price:</strong></h4>
+                        <h4 th:text="'$ ' + ${bookingInitiationDTO.totalPrice}">$0.00</h4>
+                    </div>
+                </div>
+                <!-- Payment Form -->
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <form action="/booking/payment" method="post" th:object="${paymentCardDTO}">
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="cardholderName">Cardholder Name</label>
+                                <input class="form-control" id="cardholderName" type="text" th:field="*{cardholderName}"
+                                       required>
+                                <p class="text-danger" th:if="${#fields.hasErrors('cardholderName')}"
+                                   th:errors="*{cardholderName}"></p>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="cardNumber">Card Number</label>
+                                <input class="form-control" id="cardNumber" type="text" th:field="*{cardNumber}" required>
+                                <p class="text-danger" th:if="${#fields.hasErrors('cardNumber')}" th:errors="*{cardNumber}"></p>
+                            </div>
+                            <div class="form-group row mb-3">
+                                <div class="col-6">
+                                    <label class="form-label" for="expirationDate">Expiration Date</label>
+                                    <input class="form-control" id="expirationDate" type="text" th:field="*{expirationDate}"
+                                           placeholder="MM/YY" required>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('expirationDate')}"
+                                       th:errors="*{expirationDate}"></p>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label" for="cvc">CVC</label>
+                                    <input class="form-control" id="cvc" type="text" th:field="*{cvc}" required>
+                                    <p class="text-danger" th:if="${#fields.hasErrors('cvc')}" th:errors="*{cvc}"></p>
+                                </div>
+                            </div>
+
+                            <div class="form-group text-end">
+                                <button type="submit" class="btn btn-primary">Complete Booking</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block layout:fragment="additional-scripts">
+    <script>
+        document.getElementById('cardholderName').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+        });
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 16); // Allow only numbers, limit to 16 digits
+        });
+        document.getElementById('cvc').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 3); // Allow only numbers, limit to 3 digits
+        });
+        document.getElementById('expirationDate').addEventListener('input', function(e) {
+            let value = this.value.replace(/\D/g, ''); // Allow only numbers
+            if (value.length > 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4); // Insert '/' after the first 2 digits
+            }
+            this.value = value.slice(0, 5); // Limit to 5 characters, including the '/'
+        });
+    </script>
+</th:block>
+</body>
+</html>

@@ -1,10 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layout/layout-main}">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Your Bookings</title>
 </head>
 <body>
-
+<th:block layout:fragment="content">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>Your Bookings</h2>
+                <table class="table table-striped align-middle">
+                    <thead>
+                    <tr>
+                        <th>City</th>
+                        <th>Check-In</th>
+                        <th>Check-Out</th>
+                        <th>Hotel</th>
+                        <th>Total Price</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="align-middle" th:each="booking : ${bookings}">
+                        <td th:text="${booking.hotelAddress.city}"></td>
+                        <td th:text="${booking.checkinDate}"></td>
+                        <td th:text="${booking.checkoutDate}"></td>
+                        <td th:text="${booking.hotelName}"></td>
+                        <td th:text="'$ ' + ${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 2, 'POINT')}"></td>
+                        <td>
+                            <a th:href="@{/customer/bookings/{id}(id=${booking.id})}" class="btn btn-primary btn-sm">Details</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
 </body>
 </html>

@@ -1,7 +1,7 @@
 package edu.sabanciuniv.hotelbookingapp.controller;
 
 import edu.sabanciuniv.hotelbookingapp.exception.UsernameAlreadyExistsException;
-import edu.sabanciuniv.hotelbookingapp.model.RoleType;
+import edu.sabanciuniv.hotelbookingapp.model.enums.RoleType;
 import edu.sabanciuniv.hotelbookingapp.model.dto.UserRegistrationDTO;
 import edu.sabanciuniv.hotelbookingapp.security.RedirectUtil;
 import edu.sabanciuniv.hotelbookingapp.service.UserService;

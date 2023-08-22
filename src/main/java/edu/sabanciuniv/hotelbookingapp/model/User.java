@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -26,7 +26,7 @@ public class User {
     private String password;
 
     @CreationTimestamp
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 
     @Column(nullable = false)
     private String name;
@@ -35,6 +35,7 @@ public class User {
     private String lastName;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
     private Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
