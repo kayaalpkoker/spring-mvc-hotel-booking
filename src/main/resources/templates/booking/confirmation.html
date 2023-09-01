@@ -9,7 +9,10 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="alert alert-success">Your booking is confirmed! See the details below:</div>
+                <div class="alert alert-success d-flex justify-content-center align-items-center">
+                    <i class="bi bi-check-circle-fill fs-5 me-2"></i>
+                    <span class="fs-5">Your booking is confirmed!</span>
+                </div>
                 <div class="card">
                     <div class="card-header">
                         <h2>Booking Confirmation</h2>
@@ -51,9 +54,9 @@
                         <p class="mb-3">Email: <span th:text="${bookingDTO.customerEmail}"></span></p>
                     </div>
                 </div>
-                <div class="mt-3">
-                    <a href="/" class="btn btn-primary">Back to Home</a>
-                    <a href="/customer/bookings" class="btn btn-secondary">My Bookings</a>
+                <div class="mt-3 text-end">
+                    <a href="/" class="btn btn-outline-primary">Back to Home</a>
+                    <a href="/customer/bookings" class="btn btn-primary">My Bookings</a>
                 </div>
             </div>
         </div>

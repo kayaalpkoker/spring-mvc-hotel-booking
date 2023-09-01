@@ -124,7 +124,7 @@
                     total += roomDurationPrice * roomCount;
                 });
 
-                $("#totalPrice").text(formatPrice(total));
+                $("#totalPrice").html('<strong>' + formatPrice(total) + '</strong>');
                 $("#totalPriceInput").val(total.toFixed(2));
 
                 if (total === 0) {

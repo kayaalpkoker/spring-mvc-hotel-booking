@@ -7,13 +7,12 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container">
-        <!-- Step Indicators -->
         <div class="row">
             <div class="col-md-6 text-center">
-                <i class="bi bi-check-circle-fill"></i> Your Selection
+                <i class="bi bi-check-circle-fill text-primary"></i> <span class="text-primary">Your Selection</span>
             </div>
             <div class="col-md-6 text-center">
-                <i class="bi bi-check-circle"></i> Complete Details
+                <i class="bi bi-check-circle text-primary"></i> <span class="text-primary">Complete Details</span>
             </div>
         </div>
         <hr>
@@ -59,7 +58,7 @@
                 <div class="card mb-2">
                     <div class="card-body">
                         <h4><strong>Total Price:</strong></h4>
-                        <h4 th:text="'$ ' + ${bookingInitiationDTO.totalPrice}">$0.00</h4>
+                        <h4 th:utext="'$ ' + ${#numbers.formatDecimal(bookingInitiationDTO.totalPrice, 0, 'COMMA', 2, 'POINT')}">$0.00</h4>
                     </div>
                 </div>
                 <!-- Payment Form -->
