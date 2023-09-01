@@ -34,7 +34,7 @@ public class Booking {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = true)
     private Hotel hotel;
 
     @Column(nullable = false)

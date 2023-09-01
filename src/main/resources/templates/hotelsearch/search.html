@@ -18,17 +18,17 @@
                         <div class="form-group mb-3">
                             <label class="form-label" for="city">City:</label>
                             <input class="form-control" id="city" type="text" th:field="*{city}"
-                                   placeholder="Enter city">
+                                   placeholder="Enter city" autofocus>
                             <p class="text-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></p>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label" for="checkinDate">Check-in Date:</label>
-                            <input class="form-control" id="checkinDate" type="date" th:field="*{checkinDate}">
+                            <input class="form-control" id="checkinDate" type="text" th:field="*{checkinDate}">
                             <p class="text-danger" th:if="${#fields.hasErrors('checkinDate')}" th:errors="*{checkinDate}"></p>
                         </div>
                         <div class="form-group mb-3">
                             <label class="form-label" for="checkoutDate">Check-out Date:</label>
-                            <input class="form-control" id="checkoutDate" type="date" th:field="*{checkoutDate}">
+                            <input class="form-control" id="checkoutDate" type="text" th:field="*{checkoutDate}">
                             <p class="text-danger" th:if="${#fields.hasErrors('checkoutDate')}" th:errors="*{checkoutDate}"></p>
                         </div>
                         <div class="form-group mb-3">
@@ -39,6 +39,53 @@
             </div>
         </div>
     </div>
+</th:block>
+<th:block layout:fragment="additional-scripts">
+    <script>
+        $(document).ready(function () {
+            const displayFormat = "dd.mm.yy";
+            const submitFormat = "yy-mm-dd"; // Format that Spring Boot expects for LocalDate
+
+            // Block invalid characters for city input
+            $("#city").on("input", function () {
+                var value = $(this).val();
+                var filteredValue = value.replace(/[^A-Za-z\s'-]/g, "");
+                $(this).val(filteredValue);
+            });
+
+            // Initialize checkinDate
+            $("#checkinDate").datepicker({
+                dateFormat: displayFormat,
+                minDate: 0,
+                onClose: function (selectedDate) {
+                    if (selectedDate) {
+                        var checkoutMinDate = $.datepicker.parseDate(displayFormat, selectedDate);
+                        checkoutMinDate.setDate(checkoutMinDate.getDate() + 1); // Minimum 1 day after check-in
+                        $("#checkoutDate").datepicker("option", "minDate", checkoutMinDate);
+                    }
+                }
+            }).attr('readonly', 'readonly');
+
+            // Initialize checkoutDate
+            $("#checkoutDate").datepicker({
+                dateFormat: displayFormat,
+                minDate: +1
+            }).attr('readonly', 'readonly');
+
+            // Reformat dates on form submit
+            $("form").on("submit", function () {
+                var checkinDate = $('#checkinDate').datepicker('getDate');
+                var checkoutDate = $('#checkoutDate').datepicker('getDate');
+                $('#checkinDate').val($.datepicker.formatDate(submitFormat, checkinDate));
+                $('#checkoutDate').val($.datepicker.formatDate(submitFormat, checkoutDate));
+            });
+
+            // Placeholder
+            $("#checkinDate, #checkoutDate").each(function () {
+                $(this).attr("placeholder", "Select date");
+            });
+        });
+    </script>
 </th:block>
 </body>
 </html>

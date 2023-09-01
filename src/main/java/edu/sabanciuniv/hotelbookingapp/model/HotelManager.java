@@ -23,7 +23,7 @@ public class HotelManager {
     @JoinColumn(nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "hotelManager")
+    @OneToMany(mappedBy = "hotelManager", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Hotel> hotelList = new ArrayList<>();
 
     @Override
