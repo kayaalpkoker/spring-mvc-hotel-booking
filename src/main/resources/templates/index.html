@@ -3,14 +3,27 @@
       layout:decorate="~{/layout/layout-main}">
 <head>
     <title>Homepage</title>
+    <style>
+        body {
+            background-image: url('/img/maldives-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        .content {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 <body>
 <th:block layout:fragment="content">
-    <div class="container pt-5">
+    <div class="content container pt-5">
         <div class="row justify-content-center align-items-start">
             <div class="col-12 text-center">
-                <h1 class="display-4 mb-4">"Every journey, every mile, is a step closer to finding who you truly are."</h1>
-                <p class="lead mb-4">We believe in making your travel plans simple and enjoyable.<br>Let's start a new
+                <h1 class="display-5 mb-5"><strong>"Every journey is a step closer to finding who you truly are."</strong></h1>
+                <p class="lead fs-3 mb-5">We believe in making your travel plans simple and enjoyable.<br>Let's start a new
                     journey!</p>
                 <a href="/login" class="btn btn-primary btn-lg">Explore - Dream - Discover</a>
             </div>

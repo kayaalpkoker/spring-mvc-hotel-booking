@@ -24,24 +24,24 @@ public class AuthController {
 
     @GetMapping("/")
     public String homePage(Authentication authentication) {
+        String redirect = getAuthenticatedUserRedirectUrl(authentication);
+        if (redirect != null) return redirect;
         log.debug("Accessing home page");
-        if (authentication != null && authentication.isAuthenticated()) {
-            String redirectUrl = RedirectUtil.getRedirectUrl(authentication);
-            if (redirectUrl != null) {
-                return "redirect:" + redirectUrl;
-            }
-        }
         return "index";
     }
 
     @GetMapping("/login")
-    public String loginPage() {
+    public String loginPage(Authentication authentication) {
+        String redirect = getAuthenticatedUserRedirectUrl(authentication);
+        if (redirect != null) return redirect;
         log.debug("Accessing login page");
         return "login";
     }
 
     @GetMapping("/register/customer")
-    public String showCustomerRegistrationForm(@ModelAttribute("user") UserRegistrationDTO registrationDTO) {
+    public String showCustomerRegistrationForm(@ModelAttribute("user") UserRegistrationDTO registrationDTO, Authentication authentication) {
+        String redirect = getAuthenticatedUserRedirectUrl(authentication);
+        if (redirect != null) return redirect;
         log.info("Showing customer registration form");
         return "register-customer";
     }
@@ -54,7 +54,9 @@ public class AuthController {
     }
 
     @GetMapping("/register/manager")
-    public String showManagerRegistrationForm(@ModelAttribute("user") UserRegistrationDTO registrationDTO) {
+    public String showManagerRegistrationForm(@ModelAttribute("user") UserRegistrationDTO registrationDTO, Authentication authentication) {
+        String redirect = getAuthenticatedUserRedirectUrl(authentication);
+        if (redirect != null) return redirect;
         log.info("Showing manager registration form");
         return "register-manager";
     }
@@ -80,6 +82,16 @@ public class AuthController {
             return view;
         }
         return "redirect:/" + redirectUrl + "?success";
+    }
+
+    private String getAuthenticatedUserRedirectUrl(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String redirectUrl = RedirectUtil.getRedirectUrl(authentication);
+            if (redirectUrl != null) {
+                return "redirect:" + redirectUrl;
+            }
+        }
+        return null;
     }
 
 }

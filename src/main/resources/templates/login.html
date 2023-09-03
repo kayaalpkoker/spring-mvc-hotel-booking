@@ -7,34 +7,36 @@
 <body>
 <th:block layout:fragment="content">
     <div class="container">
-        <div class="row col-md-8 offset-md-2">
-            <div th:if="${param.error}">
-                <div class="alert alert-danger">Invalid Email or Password</div>
-            </div>
-            <div th:if="${param.logout}">
-                <div class="alert alert-success">You have successfully logged out</div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="text-center">Login</h2>
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div th:if="${param.error}">
+                    <div class="alert alert-danger">Invalid Email or Password</div>
                 </div>
-                <div class="card-body">
-                    <form method="post" th:action="@{/login}">
-                        <div class="form-group mb-3">
-                            <label class="form-label" for="username">Email:</label>
-                            <input class="form-control" id="username" name="username" type="email"
-                                   placeholder="Enter email address">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label class="form-label" for="password">Password:</label>
-                            <input class="form-control" id="password" name="password" type="password"
-                                   placeholder="Enter password">
-                        </div>
-                        <div class="form-group mb-3">
-                            <button type="submit" class="btn btn-primary">Login</button>
-                            <span>Not registered? <a th:href="@{/register/customer}">Register here</a></span>
-                        </div>
-                    </form>
+                <div th:if="${param.logout}">
+                    <div class="alert alert-success">You have successfully logged out</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="text-center">Login</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" th:action="@{/login}">
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="username">Email:</label>
+                                <input class="form-control" id="username" name="username" type="email" placeholder="Email" autofocus>
+                                <small class="form-text text-muted">e.g. example@gmail.com</small>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label class="form-label" for="password">Password:</label>
+                                <input class="form-control" id="password" name="password" type="password"
+                                       placeholder="Enter password">
+                            </div>
+                            <div class="form-group mb-3">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <span>Not registered? <a th:href="@{/register/customer}">Register here</a></span>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

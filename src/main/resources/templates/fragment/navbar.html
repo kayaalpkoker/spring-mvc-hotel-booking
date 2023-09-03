@@ -24,7 +24,7 @@
                     <a class="nav-link" th:href="@{/register/customer}">Register</a>
                 </li>
                 <li class="nav-item" sec:authorize="isAnonymous()">
-                    <a class="nav-link" th:href="@{/login}">Login</a>
+                    <a class="nav-link" th:href="@{/login}"><i class="bi bi-box-arrow-in-right"></i> Login</a>
                 </li>
                 <!-- Admin -->
                 <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
@@ -51,8 +51,7 @@
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <div class="d-flex justify-content-end">
                         <form class="form-inline" method="post" th:action="@{/logout}">
-                            <button class="btn btn-link nav-link" type="submit" style="text-decoration: none;">Logout
-                            </button>
+                            <button class="btn btn-link nav-link" type="submit"><i class="bi bi-box-arrow-right"></i> Logout</button>
                         </form>
                     </div>
                 </li>

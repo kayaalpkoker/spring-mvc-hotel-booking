@@ -5,6 +5,7 @@
     <title>Layout: Main</title>
     <th:block th:insert="~{fragment/bootstrap :: bootstrap-css}"></th:block>
     <th:block th:insert="~{fragment/bootstrap :: bootstrap-icons}"></th:block>
+    <th:block th:insert="~{fragment/jquery-ui :: jquery-ui-css}"></th:block>
 </head>
 <body class="d-flex flex-column vh-100">
 <th:block th:insert="~{fragment/navbar :: navbar}"></th:block>
@@ -13,6 +14,7 @@
 </div>
 <th:block th:insert="~{fragment/footer :: footer}"></th:block>
 <th:block th:insert="~{fragment/jquery :: jquery}"></th:block>
+<th:block th:insert="~{fragment/jquery-ui :: jquery-ui-js}"></th:block>
 <th:block th:insert="~{fragment/bootstrap :: bootstrap-js}"></th:block>
 <th:block layout:fragment="additional-scripts"></th:block>
 </body>

@@ -4,6 +4,8 @@ import edu.sabanciuniv.hotelbookingapp.model.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +30,10 @@ public class Room {
     private int roomCount;
 
     private double pricePerNight;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Availability> availabilities = new ArrayList<>();
 
     @Override
     public String toString() {
